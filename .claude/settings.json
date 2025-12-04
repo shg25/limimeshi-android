@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcherType": "tools",
+        "matcher": "Edit|Write",
+        "actions": [
+          {
+            "type": "prompt",
+            "prompt": "ファイル編集完了。以下を確認してください：\n\n【セキュリティチェック】\n- APIキー、シークレット、トークンが含まれていないか\n- 環境変数ファイル（.env等）を編集していないか\n- Firebase認証情報が含まれていないか\n\n【スタイルガイドチェック（.mdファイルの場合）】\n- 箇条書きに「。」がないか\n- Phase表記がスペースなしか（Phase1、Phase2）\n- 全角コロン「：」を使用しているか\n\n詳細: governance/shared-rules.md 参照"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcherType": "tools",
+        "matcher": "Bash",
+        "actions": [
+          {
+            "type": "prompt",
+            "prompt": "【公開リポジトリ確認】このコマンドは公開リポジトリで実行されます。出力に機密情報が含まれないことを確認してください。\n\n【コミット時の確認（git commitの場合）】\n- roadmap.mdの更新は必要か？\n- CHANGELOG.mdの[Unreleased]セクションに変更を追記したか？"
+          }
+        ]
+      }
+    ]
+  }
+}

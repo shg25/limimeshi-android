@@ -156,8 +156,31 @@ limimeshi-android（このアプリ）
 
 ### Constitution（憲法）遵守
 
-全ての実装は [limimeshi-docs/memory/constitution.md](https://github.com/h-shigetsugu/limimeshi-docs/blob/main/memory/constitution.md) に準拠
+全ての実装は [limimeshi-docs/governance/constitution.md](https://github.com/shg25/limimeshi-docs/blob/main/governance/constitution.md) に準拠
+
+## ディレクトリ構成（ガバナンス関連）
+
+本リポジトリは limimeshi-docs のガバナンスルールに従う
+
+### docs/governance/
+
+limimeshi-docsから同期されるガバナンスドキュメント：
+- `docs-style-guide.md`：ドキュメント記述ルール
+- `shared-rules.md`：複数リポジトリ共通ルール
+
+### .claude/
+
+Claude Code設定：
+- `commands/`：Custom Slash Commands
+- `skills/`：Agent Skills
+- `settings.json`：Claude Code Hooks設定
+
+### 同期について
+
+- `docs/governance/` と `.claude/`（speckit-*以外）は limimeshi-docs から同期
+- 同期は `/sync-shared-rules` コマンドで実行
+- 詳細は limimeshi-docs/README.md を参照
 
 ---
 
-**最終更新**: 2025-12-03
+**最終更新**: 2025-12-05
