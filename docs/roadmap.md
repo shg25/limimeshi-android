@@ -126,4 +126,5 @@ Phase1（2025/11）時点で`specs/002-chain-list/research.md`に技術選定を
 
 ## 更新履歴
 
+- 2025/12/05：共有ファイルをシンボリックリンク方式に移行、README.md作成、CLAUDE.mdに前提条件・ガバナンス構成を追加
 - 2025/12/03：limimeshi-docsからAndroid関連タスクを抽出して作成
