@@ -11,6 +11,26 @@ parent-directory/
 └── limimeshi-android/
 ```
 
+## ブランチ戦略
+
+このリポジトリは**git-flow**を採用
+
+### ブランチ構成
+| ブランチ | 用途 |
+|---------|------|
+| `main` | 本番環境 |
+| `develop` | 開発環境 |
+| `feature/*` | 機能開発 |
+| `release/*` | リリース準備 |
+| `hotfix/*` | 緊急修正 |
+
+### 基本フロー
+1. `develop`から`feature/xxx`ブランチを作成
+2. 作業完了後、`develop`へPR
+3. リリース時は`release/x.x`→`main`にマージ
+
+詳細は [CONTRIBUTING.md](https://github.com/shg25/limimeshi-docs/blob/main/CONTRIBUTING.md) を参照
+
 ## ディレクトリ構成（ガバナンス関連）
 
 本リポジトリは limimeshi-docs のガバナンスルールに従う

@@ -11,6 +11,16 @@ parent-directory/
 └── limimeshi-android/
 ```
 
+## ブランチ戦略
+
+このリポジトリは**git-flow**を採用。詳細は [CONTRIBUTING.md](https://github.com/shg25/limimeshi-docs/blob/main/CONTRIBUTING.md) を参照。
+
+| ブランチ | 用途 |
+|---------|------|
+| `main` | 本番環境 |
+| `develop` | 開発環境（通常はここから作業） |
+| `feature/*` | 機能開発 |
+
 ## 技術スタック
 
 - Kotlin 1.9+
