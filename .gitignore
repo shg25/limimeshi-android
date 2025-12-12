@@ -14,3 +14,11 @@
 .cxx
 local.properties
 .idea/
+
+# Signing
+keystore.properties
+*.jks
+*.keystore
+
+# Firebase
+google-services.json

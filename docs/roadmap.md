@@ -12,7 +12,52 @@
 | フェーズ | ステータス |
 |---------|-----------|
 | Phase1：設計・仕様策定 | ✅ 完了 |
-| Phase2：MVP実装 | 🚧 準備中 |
+| Phase0：CI/CD基盤構築 | 🚧 進行中 |
+| Phase2：MVP実装 | ⏳ 待機中 |
+
+---
+
+## Phase0：CI/CD基盤構築
+
+### 目的
+
+- 本格的な機能開発の前に、CI/CD・品質基盤・Firebase連携を整備
+- ポートフォリオとしてDevOps理解を示す
+
+### タスク一覧
+
+#### Phase0-1：Build Flavors・Firebase基盤
+- [x] Build Flavors設定（dev/prod）
+- [x] google-services.json配置（dev/prod）
+- [x] Firebase SDK導入（Crashlytics、Analytics）
+- [ ] Crashlytics初期化・Timber連携
+- [ ] Analytics初期化・イベントヘルパー
+
+#### Phase0-1.5：Firebaseセキュリティ対策
+- [ ] Firebase APIキーにAndroidアプリ制限を設定（Google Cloud Console）
+- [ ] Firebase App Checkを有効化
+- [ ] Firebase Security Rulesを適切に設定
+
+#### Phase0-2：CI/CD構築
+- [ ] GitHub Actions設定（lint/test/build）
+- [ ] Firebase App Distribution配信（devRelease）
+- [ ] Google Play内部テスト配信（prodRelease）
+- [ ] JaCoCo カバレッジ計測
+
+#### Phase0-3：品質基盤（予定）
+- [ ] Lint設定
+- [ ] Detekt設定
+- [ ] Hilt基本設定
+- [ ] JUnit5/MockK/Turbine導入
+
+### Build Variants
+
+| Variant | パッケージ名 | アプリ名 | 用途 |
+|---------|-------------|---------|------|
+| devDebug | com.shg25.limimeshi.dev | リミDEV | 開発中のローカルテスト |
+| devRelease | com.shg25.limimeshi.dev | リミDEV | Firebase App Distribution |
+| prodDebug | com.shg25.limimeshi | リミメシ | 本番環境デバッグ |
+| prodRelease | com.shg25.limimeshi | リミメシ | Google Play配信 |
 
 ---
 
@@ -124,7 +169,32 @@ Phase1（2025/11）時点で`specs/002-chain-list/research.md`に技術選定を
 
 ---
 
+## 方針変更（2025/12/07）
+
+### ポートフォリオ戦略としてのYAGNI緩和
+
+就活ポートフォリオとして技術幅を見せるため、以下の方針を採用
+
+| 原則 | 通常 | 本プロジェクト |
+|------|------|---------------|
+| YAGNI | 必要になるまで実装しない | 技術要素を網羅的に導入 |
+| モジュール構成 | 必要最小限から段階的に | マルチモジュールを早期に構築 |
+| グラフ描画 | 必要に応じて | 求人要件に含まれるため積極導入 |
+
+### Spec-Driven + Test-Firstは維持
+
+- Spec Kitワークフローに従う
+- Test-Firstはリスクベースで実施（Android版constitution.mdに準拠）
+
+### CI/CD First
+
+機能開発の前にCI/CD基盤を構築（Phase0として実施）
+
+---
+
 ## 更新履歴
 
+- 2025/12/11：Phase0-1.5（Firebaseセキュリティ対策）を追加
+- 2025/12/10：Phase0（CI/CD基盤構築）を追加、方針変更（ポートフォリオ戦略）を記載
 - 2025/12/05：共有ファイルをシンボリックリンク方式に移行、README.md作成、CLAUDE.mdに前提条件・ガバナンス構成を追加
 - 2025/12/03：limimeshi-docsからAndroid関連タスクを抽出して作成

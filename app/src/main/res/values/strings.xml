@@ -1,3 +1,3 @@
 <resources>
-    <string name="app_name">Limimeshi</string>
+    <!-- app_name is defined in build.gradle.kts via resValue for each flavor -->
 </resources>
