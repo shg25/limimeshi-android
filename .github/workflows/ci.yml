@@ -1,34 +1,54 @@
+# ワークフロー名（GitHub Actions UIに表示される）
 name: CI
 
+# トリガー条件：いつこのワークフローを実行するか
 on:
+  # PRが作成・更新されたとき（develop/mainブランチ向け）
   pull_request:
     branches: [develop, main]
+  # developブランチにpushされたとき（マージ後）
   push:
     branches: [develop]
 
+# 同時実行制御：同じブランチで複数のワークフローが走らないようにする
 concurrency:
+  # グループ名：ワークフロー名 + ブランチ名の組み合わせ
   group: ${{ github.workflow }}-${{ github.ref }}
+  # 新しい実行が始まったら、進行中の実行をキャンセル
   cancel-in-progress: true
 
+# ジョブ定義：実行する処理のまとまり
 jobs:
+  # ==========================================
+  # Lint Job: コードの静的解析
+  # ==========================================
   lint:
     name: Lint
+    # 実行環境：Ubuntu最新版（GitHub提供の仮想マシン）
     runs-on: ubuntu-latest
+    # タイムアウト：10分を超えたら強制終了
     timeout-minutes: 10
 
+    # ステップ：順番に実行される処理
     steps:
+      # 1. リポジトリのコードをチェックアウト（ダウンロード）
       - name: Checkout
         uses: actions/checkout@v4
 
+      # 2. JDK 17をセットアップ（Androidビルドに必要）
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'temurin'
+          distribution: 'temurin'  # Eclipse Temurin（旧AdoptOpenJDK）
 
+      # 3. Gradleをセットアップ（キャッシュ機能付き）
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      # 4. GitHub SecretsからFirebase設定を復元（dev環境）
+      #    - SecretsにBase64エンコードで保存した値をデコード
+      #    - google-services.jsonとして配置
       - name: Restore google-services.json (dev)
         env:
           GOOGLE_SERVICES_JSON_DEV: ${{ secrets.GOOGLE_SERVICES_JSON_DEV }}
@@ -36,6 +56,7 @@ jobs:
           mkdir -p app/src/dev
           echo "$GOOGLE_SERVICES_JSON_DEV" | base64 --decode > app/src/dev/google-services.json
 
+      # 5. GitHub SecretsからFirebase設定を復元（prod環境）
       - name: Restore google-services.json (prod)
         env:
           GOOGLE_SERVICES_JSON_PROD: ${{ secrets.GOOGLE_SERVICES_JSON_PROD }}
@@ -43,16 +64,26 @@ jobs:
           mkdir -p app/src/prod
           echo "$GOOGLE_SERVICES_JSON_PROD" | base64 --decode > app/src/prod/google-services.json
 
+      # 6. Android Lintを実行
+      #    - コードの潜在的な問題を検出（非推奨API使用、パフォーマンス問題など）
       - name: Run Android Lint
         run: ./gradlew lint
 
+      # 7. Lint結果をアーティファクトとしてアップロード
+      #    - if: always() → 成功/失敗に関わらず実行
+      #    - GitHub Actions UIからダウンロード可能
+      #    - 7日後に自動削除（ストレージ節約）
       - name: Upload Lint Results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: lint-results
           path: app/build/reports/lint-results-*.html
+          retention-days: 7
 
+  # ==========================================
+  # Test Job: 単体テスト実行
+  # ==========================================
   test:
     name: Unit Test
     runs-on: ubuntu-latest
@@ -85,19 +116,26 @@ jobs:
           mkdir -p app/src/prod
           echo "$GOOGLE_SERVICES_JSON_PROD" | base64 --decode > app/src/prod/google-services.json
 
+      # 単体テストを実行（JVM上で動作、エミュレータ不要）
       - name: Run Unit Tests
         run: ./gradlew test
 
+      # テスト結果をアーティファクトとしてアップロード（7日後に自動削除）
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-results
           path: app/build/reports/tests/
+          retention-days: 7
 
+  # ==========================================
+  # Build Job: APKビルド
+  # ==========================================
   build:
     name: Build
     runs-on: ubuntu-latest
+    # 依存関係：lint, testが両方成功した後に実行
     needs: [lint, test]
     timeout-minutes: 15
 
@@ -128,8 +166,10 @@ jobs:
           mkdir -p app/src/prod
           echo "$GOOGLE_SERVICES_JSON_PROD" | base64 --decode > app/src/prod/google-services.json
 
+      # devDebug APKをビルド（開発環境 + デバッグ版）
       - name: Build devDebug
         run: ./gradlew assembleDevDebug
 
+      # prodDebug APKをビルド（本番環境 + デバッグ版）
       - name: Build prodDebug
         run: ./gradlew assembleProdDebug
