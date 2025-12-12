@@ -17,11 +17,13 @@ parent-directory/
 
 詳細は [CONTRIBUTING.md](https://github.com/shg25/limimeshi-docs/blob/main/CONTRIBUTING.md) を参照
 
-| ブランチ | 用途 |
-|---------|------|
-| `main` | 本番環境 |
-| `develop` | 開発環境（通常はここから作業） |
-| `feature/*` | 機能開発 |
+| ブランチ | 用途 | CI/CD |
+|---------|------|-------|
+| `main` | 本番環境 | → Google Play内部テスト |
+| `develop` | 開発環境（通常はここから作業） | - |
+| `feature/*` | 機能開発 | PR時にCI実行 |
+| `release` | リリース準備 | → Firebase App Distribution |
+| `hotfix/*` | 緊急修正 | main経由でGoogle Play |
 
 ## プロジェクト概要
 
@@ -104,6 +106,22 @@ GitHub Actionsにより以下を自動実行
 - Build（Debug）
 - JaCoCoレポート生成
 - Firebase App Distribution（段階導入）
+
+### GitHub Secrets
+
+CI/CDで使用するSecrets一覧
+
+| Secret名 | 内容 | 使用ワークフロー |
+|----------|------|------------------|
+| `GOOGLE_SERVICES_JSON_DEV` | Firebase設定（dev環境、Base64） | ci.yml, cd-firebase.yml |
+| `GOOGLE_SERVICES_JSON_PROD` | Firebase設定（prod環境、Base64） | ci.yml, cd-play.yml |
+| `KEYSTORE_BASE64` | 署名鍵（Base64） | cd-firebase.yml, cd-play.yml |
+| `KEYSTORE_PASSWORD` | キーストアパスワード | cd-firebase.yml, cd-play.yml |
+| `KEY_ALIAS` | 鍵エイリアス | cd-firebase.yml, cd-play.yml |
+| `KEY_PASSWORD` | 鍵パスワード | cd-firebase.yml, cd-play.yml |
+| `FIREBASE_APP_ID_DEV` | Firebase App ID（dev） | cd-firebase.yml |
+| `FIREBASE_SERVICE_ACCOUNT` | Firebaseサービスアカウント | cd-firebase.yml |
+| `PLAY_SERVICE_ACCOUNT` | Google Playサービスアカウント | cd-play.yml |
 
 ## AIコーディング利用について
 
