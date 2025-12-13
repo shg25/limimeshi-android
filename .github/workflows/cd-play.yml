@@ -72,6 +72,7 @@ jobs:
           echo "$PLAY_SERVICE_ACCOUNT" | base64 --decode > play-service-account.json
 
       # 9. Google Play内部テストトラックにアップロード
+      # NOTE: アプリ公開前はstatus: draftのみ許可。公開後はcompletedに変更可能
       - name: Upload to Google Play Internal Test
         uses: r0adkll/upload-google-play@v1
         with:
@@ -79,4 +80,4 @@ jobs:
           packageName: com.shg25.limimeshi
           releaseFiles: app/build/outputs/bundle/prodRelease/app-prod-release.aab
           track: internal
-          status: completed
+          status: draft
