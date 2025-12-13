@@ -58,6 +58,7 @@ jobs:
       # 7. prodRelease AABをビルド（署名付き）
       - name: Build prodRelease AAB
         env:
+          VERSION_CODE: ${{ github.run_number }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
