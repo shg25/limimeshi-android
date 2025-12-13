@@ -1,0 +1,81 @@
+# Google Play内部テストへの自動配信
+# トリガー: mainブランチへのpush
+name: CD Google Play
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy to Google Play Internal Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      # 1. コードをチェックアウト
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. JDK 17をセットアップ
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # 3. Gradleをセットアップ
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      # 4. google-services.jsonを復元（dev環境）
+      - name: Restore google-services.json (dev)
+        env:
+          GOOGLE_SERVICES_JSON_DEV: ${{ secrets.GOOGLE_SERVICES_JSON_DEV }}
+        run: |
+          mkdir -p app/src/dev
+          echo "$GOOGLE_SERVICES_JSON_DEV" | base64 --decode > app/src/dev/google-services.json
+
+      # 5. google-services.jsonを復元（prod環境）
+      - name: Restore google-services.json (prod)
+        env:
+          GOOGLE_SERVICES_JSON_PROD: ${{ secrets.GOOGLE_SERVICES_JSON_PROD }}
+        run: |
+          mkdir -p app/src/prod
+          echo "$GOOGLE_SERVICES_JSON_PROD" | base64 --decode > app/src/prod/google-services.json
+
+      # 6. 署名鍵を復元（appディレクトリに配置）
+      - name: Restore signing key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > app/upload-keystore.jks
+
+      # 7. prodRelease AABをビルド（署名付き）
+      - name: Build prodRelease AAB
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew bundleProdRelease
+
+      # 8. Google Playサービスアカウントをデコード
+      - name: Decode Play service account
+        env:
+          PLAY_SERVICE_ACCOUNT: ${{ secrets.PLAY_SERVICE_ACCOUNT }}
+        run: |
+          echo "$PLAY_SERVICE_ACCOUNT" | base64 --decode > play-service-account.json
+
+      # 9. Google Play内部テストトラックにアップロード
+      - name: Upload to Google Play Internal Test
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJson: play-service-account.json
+          packageName: com.shg25.limimeshi
+          releaseFiles: app/build/outputs/bundle/prodRelease/app-prod-release.aab
+          track: internal
+          status: completed
