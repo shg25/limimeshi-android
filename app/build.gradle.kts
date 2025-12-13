@@ -77,6 +77,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -97,6 +98,9 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
+
+    // Logging
+    implementation(libs.timber)
 
     // Test
     testImplementation(libs.junit)
