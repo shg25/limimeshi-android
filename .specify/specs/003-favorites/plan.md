@@ -1,7 +1,9 @@
 # Implementation Plan: お気に入り登録（Favorites）
 
-**Branch**: `003-favorites` | **Date**: 2025-11-28 | **Spec**: [spec.md](./spec.md)  
-**Input**: Feature specification from `/specs/003-favorites/spec.md`  
+- **Branch**: `003-favorites`
+- **Date**: 2025-11-28
+- **Spec**: [spec.md](./spec.md)
+- **Input**: Feature specification from `/specs/003-favorites/spec.md`
 
 ## Summary
 
@@ -17,15 +19,15 @@
 
 ## Technical Context
 
-**Language/Version**: Kotlin 1.9+, Jetpack Compose 1.5+  
-**Primary Dependencies**: Firebase Android SDK (BOM), Material 3, Hilt  
-**Storage**: Firestore（サブコレクション `/users/{userId}/favorites/{chainId}`）  
-**Testing**: JUnit 5, MockK, Turbine, Compose Testing, Robolectric  
-**Target Platform**: Android（minSdk 26, targetSdk 34）  
-**Project Type**: Android（limimeshi-android リポジトリ）  
-**Performance Goals**: お気に入り登録・解除操作が1秒以内に完了、UI反映も1秒以内  
-**Constraints**: Firestore Transactionの制約（同時実行制御、リトライロジック）  
-**Scale/Scope**: Phase2の100ユーザー、平均5〜10件のお気に入り登録、月間3,000 writes（Firestore無料枠内）  
+- **Language/Version**: Kotlin 1.9+, Jetpack Compose 1.5+
+- **Primary Dependencies**: Firebase Android SDK (BOM), Material 3, Hilt
+- **Storage**: Firestore（サブコレクション `/users/{userId}/favorites/{chainId}`）
+- **Testing**: JUnit 5, MockK, Turbine, Compose Testing, Robolectric
+- **Target Platform**: Android（minSdk 26, targetSdk 34）
+- **Project Type**: Android（limimeshi-android リポジトリ）
+- **Performance Goals**: お気に入り登録・解除操作が1秒以内に完了、UI反映も1秒以内
+- **Constraints**: Firestore Transactionの制約（同時実行制御、リトライロジック）
+- **Scale/Scope**: Phase2の100ユーザー、平均5〜10件のお気に入り登録、月間3,000 writes（Firestore無料枠内）
 
 ## Constitution Check
 

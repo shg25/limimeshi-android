@@ -1,11 +1,9 @@
 # Tasks: お気に入り登録（Favorites）
 
-**Input**: Design documents from `/specs/003-favorites/`  
-**Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, contracts/firestore-schema.md, quickstart.md  
-
-**Tests**: このタスクリストにはテスト作成タスクが含まれています（spec.mdで明示的に要求されているため）
-
-**Organization**: タスクはユーザーストーリーごとにグループ化され、各ストーリーを独立して実装・テスト可能にしています
+- **Input**: Design documents from `/specs/003-favorites/`
+- **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, contracts/firestore-schema.md, quickstart.md
+- **Tests**: このタスクリストにはテスト作成タスクが含まれています（spec.mdで明示的に要求されているため）
+- **Organization**: タスクはユーザーストーリーごとにグループ化され、各ストーリーを独立して実装・テスト可能にしています
 
 ## Format: `[ID] [P?] [Story] Description`
 

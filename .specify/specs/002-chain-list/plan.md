@@ -1,7 +1,9 @@
 # Implementation Plan: チェーン店一覧（Chain List）
 
-**Branch**: `002-chain-list` | **Date**: 2025-11-28 | **Spec**: [spec.md](./spec.md)  
-**Input**: Feature specification from `/specs/002-chain-list/spec.md`  
+- **Branch**: `002-chain-list`
+- **Date**: 2025-11-28
+- **Spec**: [spec.md](./spec.md)
+- **Input**: Feature specification from `/specs/002-chain-list/spec.md`
 
 ## Summary
 
@@ -16,15 +18,15 @@
 
 ## Technical Context
 
-**Language/Version**: Kotlin 1.9+, Android SDK 34 (Android 14)  
-**Primary Dependencies**: Jetpack Compose 1.5+, Material 3, Firebase Android SDK, DataStore, Hilt  
-**Storage**: Firestore（読み取り専用）、DataStore Preferences（フィルタ・ソート設定）  
-**Testing**: JUnit 5, MockK, Turbine, Compose Testing, Robolectric  
-**Target Platform**: Android 8.0+ (API 26+)  
-**Project Type**: Mobile（limimeshi-android リポジトリ）  
-**Performance Goals**: 初期表示3秒以内（モバイル4G環境、X Post埋め込み部分を除く）  
-**Constraints**: Phase2では16チェーン店固定、各チェーンあたり1〜5件程度のキャンペーン  
-**Scale/Scope**: Phase2の160ユーザー、16チェーン店、平均キャンペーン数は変動  
+- **Language/Version**: Kotlin 1.9+, Android SDK 34 (Android 14)
+- **Primary Dependencies**: Jetpack Compose 1.5+, Material 3, Firebase Android SDK, DataStore, Hilt
+- **Storage**: Firestore（読み取り専用）、DataStore Preferences（フィルタ・ソート設定）
+- **Testing**: JUnit 5, MockK, Turbine, Compose Testing, Robolectric
+- **Target Platform**: Android 8.0+ (API 26+)
+- **Project Type**: Mobile（limimeshi-android リポジトリ）
+- **Performance Goals**: 初期表示3秒以内（モバイル4G環境、X Post埋め込み部分を除く）
+- **Constraints**: Phase2では16チェーン店固定、各チェーンあたり1〜5件程度のキャンペーン
+- **Scale/Scope**: Phase2の160ユーザー、16チェーン店、平均キャンペーン数は変動  
 
 ## Constitution Check
 

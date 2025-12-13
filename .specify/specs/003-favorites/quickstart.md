@@ -1,8 +1,8 @@
 # Quickstart: お気に入り登録（Favorites）
 
-**Feature**: 003-favorites  
-**Date**: 2025-11-28  
-**Related**: [spec.md](./spec.md), [research.md](./research.md), [contracts/firestore-schema.md](./contracts/firestore-schema.md)  
+- **Feature**: 003-favorites
+- **Date**: 2025-11-28
+- **Related**: [spec.md](./spec.md), [research.md](./research.md), [contracts/firestore-schema.md](./contracts/firestore-schema.md)  
 
 ## Prerequisites
 

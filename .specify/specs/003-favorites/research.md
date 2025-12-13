@@ -1,8 +1,8 @@
 # Research: お気に入り登録（Favorites）
 
-**Feature**: 003-favorites  
-**Date**: 2025-11-28  
-**Status**: Phase 0 - Research  
+- **Feature**: 003-favorites
+- **Date**: 2025-11-28
+- **Status**: Phase 0 - Research  
 
 ## Overview
 
