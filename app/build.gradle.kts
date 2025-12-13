@@ -18,7 +18,8 @@ android {
         applicationId = "com.shg25.limimeshi"
         minSdk = 31
         targetSdk = 36
-        versionCode = 1
+        // CI/CD: VERSION_CODE環境変数から読み込み、ローカル: デフォルト1
+        versionCode = (System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1)
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
