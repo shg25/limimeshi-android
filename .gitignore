@@ -22,3 +22,6 @@ keystore.properties
 
 # Firebase
 google-services.json
+
+# Claude Code
+.claude/settings.local.json
