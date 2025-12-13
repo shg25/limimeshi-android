@@ -1,8 +1,8 @@
 # Research: チェーン店一覧（Chain List）
 
-**Feature**: 002-chain-list
-**Date**: 2025-11-28
-**Status**: Phase 0 - Research
+- **Feature**: 002-chain-list
+- **Date**: 2025-11-28
+- **Status**: Phase 0 - Research
 
 ## Overview
 

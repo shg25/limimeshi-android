@@ -1,8 +1,8 @@
 # Quickstart: チェーン店一覧（Chain List）
 
-**Feature**: 002-chain-list
-**Date**: 2025-11-28
-**Related**: [spec.md](./spec.md), [research.md](./research.md), [contracts/firestore-schema.md](./contracts/firestore-schema.md)
+- **Feature**: 002-chain-list
+- **Date**: 2025-11-28
+- **Related**: [spec.md](./spec.md), [research.md](./research.md), [contracts/firestore-schema.md](./contracts/firestore-schema.md)
 
 ## Prerequisites
 

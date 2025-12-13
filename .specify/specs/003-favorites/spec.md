@@ -1,10 +1,10 @@
 # Feature Specification: お気に入り登録（Favorites）
 
-**Feature Branch**: `003-favorites`  
-**Created**: 2025-11-16  
-**Updated**: 2025-11-28  
-**Status**: Draft  
-**Input**: User description: "ログインユーザーがチェーン店をお気に入り登録・解除できる機能（Androidアプリ）。お気に入り登録したチェーンは002のチェーン店一覧フィルタで使用される。お気に入り状態はFirestoreに永続化され、複数デバイス間で同期される。Phase2 MVPで実装。"
+- **Feature Branch**: `003-favorites`
+- **Created**: 2025-11-16
+- **Updated**: 2025-11-28
+- **Status**: Draft
+- **Input**: User description: "ログインユーザーがチェーン店をお気に入り登録・解除できる機能（Androidアプリ）。お気に入り登録したチェーンは002のチェーン店一覧フィルタで使用される。お気に入り状態はFirestoreに永続化され、複数デバイス間で同期される。Phase2 MVPで実装。"
 
 ## User Scenarios & Testing *(mandatory)*
 

@@ -1,10 +1,10 @@
 # Feature Specification: CI/CD Infrastructure
 
-**Feature Branch**: `feature/phase0-ci-cd-firebase`<br>
-**Created**: 2025-12-10<br>
-**Updated**: 2025-12-10<br>
-**Status**: Draft<br>
-**Input**: Phase0としてCI/CD基盤を構築。GitHub Actionsによるlint/test/build自動化、Firebase App Distributionへのdev版配信、Google Play内部テストへのprod版配信を実現する。ポートフォリオとしてDevOps理解を示す。
+- **Feature Branch**: `feature/phase0-ci-cd-firebase`
+- **Created**: 2025-12-10
+- **Updated**: 2025-12-14
+- **Status**: Implemented
+- **Input**: Phase0としてCI/CD基盤を構築。GitHub Actionsによるlint/test/build自動化、Firebase App Distributionへのdev版配信、Google Play内部テストへのprod版配信を実現する。ポートフォリオとしてDevOps理解を示す。
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -60,6 +60,24 @@ mainブランチへのpush時、prodRelease版AABが自動でGoogle Play内部�
 
 ---
 
+### User Story 4 - Firebase Observability (Priority: P2)
+
+開発者がアプリのクラッシュやユーザー行動を把握でき、品質改善に活用できる。
+
+**Why this priority**: CI/CD構築後、アプリの監視基盤を整備。本番運用前に必要だがCI/CDより優先度は低い。
+
+**Independent Test**: アプリ起動時にログが記録され、Firebase Consoleで確認できれば価値を提供できる。
+
+**Acceptance Scenarios**:
+
+1. **Given** devDebugビルドを実行, **When** Timber.d()を呼び出す, **Then** Logcatにログが出力される
+2. **Given** devReleaseビルドを実行, **When** Timber.w()以上を呼び出す, **Then** Firebase Crashlyticsにログが送信される
+3. **Given** devReleaseビルドを実行, **When** Timber.d()を呼び出す, **Then** Crashlyticsには送信されない（WARN未満は除外）
+4. **Given** 例外が発生, **When** Timber.e(exception)を呼び出す, **Then** Crashlyticsに例外スタックトレースが記録される
+5. **Given** AnalyticsHelper.logScreenView()を呼び出す, **When** イベントが送信される, **Then** Firebase Analyticsで画面遷移が確認できる
+
+---
+
 ### Edge Cases
 
 - **シークレット未設定**: 必要なシークレット（署名鍵、サービスアカウント）が未設定の場合、明確なエラーメッセージで失敗
@@ -87,6 +105,13 @@ mainブランチへのpush時、prodRelease版AABが自動でGoogle Play内部�
 - **FR-009**: システムはmainブランチへのpush時にprodReleaseビルドを実行しなければならない
 - **FR-010**: システムはprodRelease AABをGoogle Play内部テストトラックにアップロードしなければならない
 - **FR-011**: システムはアップロード用署名鍵をGitHub Secretsで安全に管理しなければならない
+
+#### Firebase Observability
+- **FR-012**: システムはデバッグビルド時にTimber.DebugTreeでLogcatにログを出力しなければならない
+- **FR-013**: システムはリリースビルド時にCrashlyticsTreeでWARN以上のログをCrashlyticsに送信しなければならない
+- **FR-014**: システムは例外発生時にCrashlyticsに例外情報を記録しなければならない
+- **FR-015**: システムはAnalyticsHelperを通じてFirebase Analyticsにイベントを送信できなければならない
+- **FR-016**: AnalyticsHelperは画面表示、お気に入り操作、ソート変更等の主要イベントをサポートしなければならない
 
 ### Non-Functional Requirements
 
