@@ -39,10 +39,18 @@
 - [ ] Firebase Security Rulesを適切に設定
 
 #### Phase0-2：CI/CD構築
-- [ ] GitHub Actions設定（lint/test/build）
-- [ ] Firebase App Distribution配信（devRelease）
-- [ ] Google Play内部テスト配信（prodRelease）
+- [x] GitHub Actions設定（lint/test/build）
+- [x] Firebase App Distribution配信（devRelease）
+- [x] Google Play内部テスト配信（prodRelease）※status: draft
 - [ ] JaCoCo カバレッジ計測
+
+#### Phase0-4：Google Play公開準備（MVP実装完了後）
+- [ ] Google Play Consoleアプリセットアップ完了
+  - [ ] プライバシーポリシー設定
+  - [ ] ストア掲載情報（アイコン、スクリーンショット、説明文）
+  - [ ] コンテンツのレーティング
+  - [ ] その他Google審査要件
+- [ ] cd-play.ymlの`status: draft`を`completed`に変更（自動公開化）
 
 #### Phase0-3：品質基盤（予定）
 - [ ] Lint設定
@@ -194,6 +202,7 @@ Phase1（2025/11）時点で`specs/002-chain-list/research.md`に技術選定を
 
 ## 更新履歴
 
+- 2025/12/14：Phase0-2（CI/CD構築）完了、Phase0-4（Google Play公開準備）を追加
 - 2025/12/11：Phase0-1.5（Firebaseセキュリティ対策）を追加
 - 2025/12/10：Phase0（CI/CD基盤構築）を追加、方針変更（ポートフォリオ戦略）を記載
 - 2025/12/05：共有ファイルをシンボリックリンク方式に移行、README.md作成、CLAUDE.mdに前提条件・ガバナンス構成を追加
