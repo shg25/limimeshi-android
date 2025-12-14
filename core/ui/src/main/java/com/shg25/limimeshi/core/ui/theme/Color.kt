@@ -1,4 +1,4 @@
-package com.shg25.limimeshi.ui.theme
+package com.shg25.limimeshi.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
