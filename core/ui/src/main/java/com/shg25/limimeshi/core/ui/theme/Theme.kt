@@ -1,4 +1,4 @@
-package com.shg25.limimeshi.ui.theme
+package com.shg25.limimeshi.core.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
