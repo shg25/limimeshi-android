@@ -19,7 +19,7 @@
 - **マルチモジュール構成**: 早期からモジュール分割を実施し、設計力を証明
 - **非機能要件の充実**: CI/CD、テスト、品質基盤を整備し、運用力を証明
 
-詳細は `docs/preparation/technical_vision.md` を参照。
+詳細は `docs/roadmap.md`（方針変更セクション）を参照。
 
 ## 1. Kotlin + Jetpack Compose（Androidフロントエンド）
 
@@ -643,7 +643,7 @@ fun ChainListScreen(viewModel: ChainListViewModel) {
 | 品質基盤 | Lint + Detekt + JaCoCo | 静的解析、カバレッジ計測 |
 | CI/CD | GitHub Actions | 自動テスト、自動配信 |
 
-全ての技術選定は Constitution および `docs/preparation/technical_vision.md` に準拠しています。
+全ての技術選定は `.specify/memory/constitution.md` および `docs/adr/001-adopt-portfolio-driven-tech-stack.md` に準拠しています。
 
 ### 2025/12/14 再確認結果
 

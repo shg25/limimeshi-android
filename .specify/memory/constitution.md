@@ -15,11 +15,11 @@ limimeshi全体の憲法を継承しつつ、本リポジトリではAndroid開�
 
 #### I. Spec-Driven + Vertical Slice（仕様駆動 × 縦割り）
 
-**出典**：[GitHub Spec Kit公式](https://github.com/github/spec-kit) / docs/spec配下
+**出典**：[GitHub Spec Kit公式](https://github.com/github/spec-kit)
 
 仕様駆動開発を実践
 - Spec Kitのワークフロー（`/speckit-specify` → `/speckit-clarify` → `/speckit-plan` → `/speckit-tasks`）を基本とする
-- 全ての機能はspec（`docs/spec/`）から開始
+- 全ての機能は`.specify/specs/`から開始
 - 実装はVertical Slice（UI → ViewModel → UseCase → Repository → DataSource）単位で進める
 - 「仕様で何を証明したいか」を先に決めてからコードを書く
 

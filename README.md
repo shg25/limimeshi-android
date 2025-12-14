@@ -78,7 +78,7 @@ parent-directory/
 - CI/CDやFirebase Crashlyticsなど運用面も含めた総合的なプロジェクト例を示す
 - AIコーディング（Claude Code / ChatGPT）と人間の判断を組み合わせた開発フローの実験・記録
 
-詳細：`docs/preparation/technical_vision.md`
+詳細：`docs/roadmap.md`
 
 ## 技術スタック
 
@@ -88,7 +88,7 @@ parent-directory/
 - Kotlin Coroutines（structured concurrency）
 - Kotlin Flow（UI state / data stream）
 - Hilt（DI）
-- Retrofit / OkHttp
+- Firebase SDK（Firestore / Authentication）
 - Room / DataStore
 - Firebase Crashlytics / Analytics
 - GitHub Actions（CI / JaCoCo / lint / test）
@@ -102,34 +102,43 @@ parent-directory/
 - **domain**：UseCase（アプリ固有のビジネスルール）
 - **data**：Repository / DataSource（API / DB / キャッシュ）
 
-詳細：`docs/design/architecture.md`
+詳細：`docs/adr/002-multimodule-architecture.md`
 
-## モジュール構成（予定）
+## モジュール構成
 
 ```
-app/
-core/
-designsystem/
-domain/
-data/
-model/
+app/                    # アプリケーションエントリポイント
 feature/
-<feature-name>/
+  ├── chainlist/        # チェーン店一覧機能
+  └── favorites/        # お気に入り機能
+core/
+  ├── ui/               # 共通UI（Theme、Components）
+  ├── model/            # ドメインモデル
+  ├── domain/           # UseCase
+  ├── data/             # Repository実装
+  ├── network/          # Firebase DataSource
+  ├── database/         # Room Database
+  └── common/           # 共通ユーティリティ
 ```
 
-モジュール設計の検討ログ：`docs/design/module_structure.md`
+モジュール設計の詳細：`docs/adr/002-multimodule-architecture.md`
 
 ## 仕様（Spec / Vertical Slice）
 
 実際の機能実装は小さなVertical Slice単位で進める
 
-例：
+### MVP機能
 
-- 一覧 → 詳細 → 保存（お気に入り）
-- フィルタリング
-- グラフ画面（統計表示）
+- 002-chain-list：チェーン店一覧表示、キャンペーン表示
+- 003-favorites：お気に入り登録・解除
 
-初期スライスの仕様：`docs/spec/first_slice.md`
+### Phase2.5（追加技術デモ）
+
+- 004-chain-detail：チェーン店詳細画面（Navigation引数、SavedStateHandle）
+- 005-background-sync：WorkManagerによるバックグラウンド同期
+- 006-statistics：Compose Chartsによるお気に入り数推移グラフ
+
+仕様の詳細：`.specify/specs/`配下
 
 ## テスト方針
 
@@ -173,7 +182,7 @@ CI/CDで使用するSecrets一覧
 - ChatGPTによる補助的なコード提案・リファクタ指示
 - AIが生成するコードの責務は厳密にレビューし、人間が最終判断
 
-AI開発方針の詳細：`docs/preparation/technical_vision.md`
+AI開発方針の詳細：`CLAUDE.md`、`.specify/memory/constitution.md`
 
 ## 今後の予定
 
