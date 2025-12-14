@@ -139,7 +139,7 @@ Phase1（2025/11）時点で`specs/002-chain-list/research.md`に技術選定を
    - X Post埋め込み表示
    - ソート順選択（新着順/ふりがな順）
    - お気に入りフィルタ（003と連携）
-   - **チェーン店詳細画面**（Navigation引数、SavedStateHandle）
+   - **Pull-to-refresh**（ローカルキャッシュのクリア・再同期）
 
 2. **003-favorites（お気に入り登録）**
    - チェーン店お気に入り登録・解除
@@ -169,11 +169,17 @@ Phase1（2025/11）時点で`specs/002-chain-list/research.md`に技術選定を
 - **技術要素**:
   - Navigation Compose（Type-safe arguments）
   - SavedStateHandle（画面回転・復元時の状態保持）
-  - Process death対応
+  - **Process death対応**（メモリ不足でアプリ強制終了後の状態復元）
+  - rememberSaveable（Compose UI状態の保持）
 - **画面内容**:
   - チェーン店詳細情報（ロゴ、説明、公式URL）
   - 過去のキャンペーン履歴
   - お気に入り登録ボタン
+- **Process death対応の実装ポイント**:
+  - ViewModelの状態をSavedStateHandleで保存
+  - Navigation引数をSavedStateHandleから復元
+  - UIスクロール位置をrememberSaveableで保持
+  - 面接での説明ポイント：「なぜ通常のviewModelScopeでは不十分か」
 
 #### 005-background-sync（バックグラウンド同期）
 
