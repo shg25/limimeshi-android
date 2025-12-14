@@ -130,14 +130,14 @@ jobs:
           retention-days: 7
 
   # ==========================================
-  # Build Job: APKビルド
+  # Build Job: コンパイル検証
   # ==========================================
   build:
-    name: Build
+    name: Build Check
     runs-on: ubuntu-latest
     # 依存関係：lint, testが両方成功した後に実行
     needs: [lint, test]
-    timeout-minutes: 15
+    timeout-minutes: 10
 
     steps:
       - name: Checkout
@@ -166,10 +166,7 @@ jobs:
           mkdir -p app/src/prod
           echo "$GOOGLE_SERVICES_JSON_PROD" | base64 --decode > app/src/prod/google-services.json
 
-      # devDebug APKをビルド（開発環境 + デバッグ版）
-      - name: Build devDebug
-        run: ./gradlew assembleDevDebug
-
-      # prodDebug APKをビルド（本番環境 + デバッグ版）
-      - name: Build prodDebug
-        run: ./gradlew assembleProdDebug
+      # Kotlinコンパイル検証（APK生成なし、高速）
+      # APKビルドはCD（cd-firebase.yml, cd-play.yml）で実行
+      - name: Compile Check
+        run: ./gradlew compileDevDebugKotlin compileProdDebugKotlin
