@@ -202,6 +202,7 @@ Phase1（2025/11）時点で`specs/002-chain-list/research.md`に技術選定を
 
 ## 更新履歴
 
+- 2025/12/14：マルチモジュール構成をAndroid公式ドキュメント準拠に更新、ADR-002作成
 - 2025/12/14：Android技術選定の再確認完了、ADR-001作成、research.md更新
 - 2025/12/14：Phase0-3完了（Lint/Detekt/Hilt/JUnit5/MockK/Turbine/JaCoCo）
 - 2025/12/14：Phase0-2完了、JaCoCoをPhase0-3に移動、ci.ymlのbuildジョブ軽量化
