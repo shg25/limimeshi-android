@@ -33,17 +33,17 @@
 - [x] Crashlytics初期化・Timber連携
 - [x] Analytics初期化・イベントヘルパー
 
-#### Phase0-2：CI/CD構築
+#### Phase0-2：CI/CD構築 ✅
 - [x] GitHub Actions設定（lint/test/build）
 - [x] Firebase App Distribution配信（devRelease）
 - [x] Google Play内部テスト配信（prodRelease）※status: draft
-- [ ] JaCoCo カバレッジ計測
 
 #### Phase0-3：品質基盤（予定）
-- [ ] Lint設定
+- [ ] Lint設定カスタマイズ
 - [ ] Detekt設定
 - [ ] Hilt基本設定
 - [ ] JUnit5/MockK/Turbine導入
+- [ ] JaCoCoカバレッジ計測
 
 #### Phase0-4：Google Play公開準備（MVP実装完了後）
 - [ ] Google Play Consoleアプリセットアップ完了
@@ -202,6 +202,7 @@ Phase1（2025/11）時点で`specs/002-chain-list/research.md`に技術選定を
 
 ## 更新履歴
 
+- 2025/12/14：Phase0-2完了、JaCoCoをPhase0-3に移動、ci.ymlのbuildジョブ軽量化
 - 2025/12/14：Phase0-1完了、Phase0-1.5→Phase0-5に移動（MVP後）
 - 2025/12/11：Phase0-1.5（Firebaseセキュリティ対策）を追加
 - 2025/12/10：Phase0（CI/CD基盤構築）を追加、方針変更（ポートフォリオ戦略）を記載
