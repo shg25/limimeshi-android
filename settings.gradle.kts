@@ -21,3 +21,16 @@ dependencyResolutionManagement {
 
 rootProject.name = "Limimeshi"
 include(":app")
+
+// Feature modules
+include(":feature:chainlist")
+include(":feature:favorites")
+
+// Core modules
+include(":core:ui")
+include(":core:model")
+include(":core:domain")
+include(":core:data")
+include(":core:network")
+include(":core:database")
+include(":core:common")
