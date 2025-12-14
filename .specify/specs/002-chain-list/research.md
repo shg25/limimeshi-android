@@ -2,11 +2,24 @@
 
 - **Feature**: 002-chain-list
 - **Date**: 2025-11-28
+- **Updated**: 2025-12-14
 - **Status**: Phase 0 - Research
 
 ## Overview
 
 チェーン店一覧機能（Androidアプリ）の実装に必要な技術選定と設計パターンの調査結果。チェーン店を一覧表示し、各チェーン店に紐づくキャンペーンをチェーン店単位で確認できる画面。
+
+## Strategy Update（2025/12/07）
+
+**方針変更：YAGNI緩和 → ポートフォリオ戦略**
+
+本プロジェクトの目的が「Androidエンジニアとしての専門性・技術力の証明」に変更されたため、以下の方針を採用：
+
+- **技術要素の網羅的導入**: 多くのライブラリ・パターンを実装し、技術幅を証明
+- **マルチモジュール構成**: 早期からモジュール分割を実施し、設計力を証明
+- **非機能要件の充実**: CI/CD、テスト、品質基盤を整備し、運用力を証明
+
+詳細は `docs/preparation/technical_vision.md` を参照。
 
 ## 1. Kotlin + Jetpack Compose（Androidフロントエンド）
 
@@ -233,10 +246,86 @@ suspend fun saveFilterPreference(showFavoritesOnly: Boolean) {
 
 ---
 
-## 6. Firestoreクエリ設計
+## 6. ローカルキャッシュ（Room）
 
 ### Decision
-クライアント側で複合クエリを実行し、必要に応じてキャッシュを活用
+**Room Database** を使用してFirestoreデータをローカルキャッシュ
+
+### Rationale
+- **オフライン対応**: ネットワーク接続なしでもデータ表示可能
+- **パフォーマンス向上**: ローカルDBからの読み込みは高速
+- **ポートフォリオ戦略**: Roomの使用経験を証明
+- **Single Source of Truth**: ローカルDBを唯一の信頼源とするRepository Pattern
+
+### Implementation
+```kotlin
+// Entity
+@Entity(tableName = "chains")
+data class ChainEntity(
+    @PrimaryKey val id: String,
+    val name: String,
+    val furigana: String,
+    val logoUrl: String?,
+    val officialUrl: String?,
+    val favoriteCount: Int,
+    val updatedAt: Long
+)
+
+// DAO
+@Dao
+interface ChainDao {
+    @Query("SELECT * FROM chains ORDER BY furigana ASC")
+    fun getChains(): Flow<List<ChainEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertChains(chains: List<ChainEntity>)
+
+    @Query("DELETE FROM chains")
+    suspend fun deleteAll()
+}
+
+// Database
+@Database(entities = [ChainEntity::class, CampaignEntity::class], version = 1)
+abstract class LimimeshiDatabase : RoomDatabase() {
+    abstract fun chainDao(): ChainDao
+    abstract fun campaignDao(): CampaignDao
+}
+```
+
+### Data Flow (Repository Pattern)
+```
+┌─────────────┐     ┌──────────────┐     ┌───────────┐
+│  ViewModel  │────▶│  Repository  │────▶│   Room    │
+│             │◀────│              │◀────│  (Local)  │
+└─────────────┘     └──────┬───────┘     └───────────┘
+                           │
+                           │ refresh
+                           ▼
+                    ┌──────────────┐
+                    │  Firestore   │
+                    │  (Remote)    │
+                    └──────────────┘
+```
+
+1. ViewModelはRepositoryからFlowを購読
+2. Repositoryは常にRoomからデータを返す（Single Source of Truth）
+3. リフレッシュ時はFirestoreから取得→Roomに保存→Flowが自動更新
+
+### Alternatives Considered
+- **Firestoreキャッシュのみ**: 標準機能だがRoom使用経験を示せない
+- **DataStore**: 構造化データにはRoomの方が適切
+- **SQLDelight**: Roomの方がAndroid公式推奨
+
+### Reference
+- [Room Persistence Library](https://developer.android.com/training/data-storage/room)
+- [Offline-first Repository Pattern](https://developer.android.com/topic/architecture/data-layer/offline-first)
+
+---
+
+## 7. Firestoreクエリ設計
+
+### Decision
+クライアント側で複合クエリを実行し、Roomにキャッシュ
 
 ### Query Patterns
 
@@ -361,25 +450,77 @@ fun CampaignStatus.toDisplayString(): String = when (this) {
 ## 8. アーキテクチャパターン
 
 ### Decision
-**MVVM + Clean Architecture（簡略版）** を採用
+**MVVM + Clean Architecture + マルチモジュール構成** を採用
 
 ### Rationale
 - **Googleの推奨**: Android公式のアーキテクチャガイドライン
 - **テスタビリティ**: ViewModelをユニットテスト可能
 - **関心の分離**: UI、ビジネスロジック、データ層を分離
 - **Jetpack Compose対応**: StateHolderパターンとの親和性
+- **ポートフォリオ戦略**: マルチモジュール構成で設計力を証明
 
-### Layer Structure
+### Multi-Module Structure
 ```
-ui/           # Composable関数、画面
-viewmodel/    # ViewModel、UIステート
-repository/   # データ層の抽象化
-model/        # ドメインモデル
+app/                    # アプリケーションエントリポイント
+core/
+  ├── designsystem/     # 共通UI（Theme、Components）
+  ├── model/            # ドメインモデル
+  ├── domain/           # UseCase
+  ├── data/             # Repository実装、DataSource
+  └── common/           # 共通ユーティリティ
+feature/
+  └── chainlist/        # チェーン店一覧機能
+```
+
+### Clean Architecture Layers
+```
+┌─────────────────────────────────────────────┐
+│  Presentation Layer (feature/chainlist)     │
+│  - Composable Functions                     │
+│  - ViewModel + UiState                      │
+│  - Navigation                               │
+└──────────────────┬──────────────────────────┘
+                   │ depends on
+┌──────────────────▼──────────────────────────┐
+│  Domain Layer (core/domain)                 │
+│  - UseCase                                  │
+│  - Repository Interface                     │
+│  - Domain Model                             │
+└──────────────────┬──────────────────────────┘
+                   │ depends on
+┌──────────────────▼──────────────────────────┐
+│  Data Layer (core/data)                     │
+│  - Repository Implementation                │
+│  - DataSource (Remote/Local)                │
+│  - DTO / Entity                             │
+└─────────────────────────────────────────────┘
 ```
 
 ### Key Components
 ```kotlin
-// UIステート
+// Domain Layer: Repository Interface
+interface ChainRepository {
+    fun getChains(): Flow<List<Chain>>
+    suspend fun refreshChains()
+}
+
+// Domain Layer: UseCase
+class GetChainsWithCampaignsUseCase @Inject constructor(
+    private val chainRepository: ChainRepository,
+    private val campaignRepository: CampaignRepository
+) {
+    operator fun invoke(): Flow<List<ChainWithCampaigns>> = /* ... */
+}
+
+// Data Layer: Repository Implementation
+class ChainRepositoryImpl @Inject constructor(
+    private val remoteDataSource: ChainRemoteDataSource,
+    private val localDataSource: ChainLocalDataSource
+) : ChainRepository {
+    override fun getChains(): Flow<List<Chain>> = /* ... */
+}
+
+// Presentation Layer: UIステート
 data class ChainListUiState(
     val chainsWithCampaigns: List<ChainWithCampaigns> = emptyList(),
     val isLoading: Boolean = true,
@@ -387,10 +528,10 @@ data class ChainListUiState(
     val error: String? = null
 )
 
-// ViewModel
-class ChainListViewModel(
-    private val chainRepository: ChainRepository,
-    private val campaignRepository: CampaignRepository,
+// Presentation Layer: ViewModel
+@HiltViewModel
+class ChainListViewModel @Inject constructor(
+    private val getChainsWithCampaignsUseCase: GetChainsWithCampaignsUseCase,
     private val preferencesRepository: PreferencesRepository
 ) : ViewModel() {
 
@@ -403,12 +544,13 @@ class ChainListViewModel(
 ```
 
 ### Alternatives Considered
-- **MVI**: Phase2では過剰、ViewModelで十分
+- **MVI**: より厳格な状態管理だが、本プロジェクトではMVVMで十分
 - **Plain Compose**: 状態管理が複雑になる、テストしにくい
-- **Redux/Mobius**: Androidでは一般的でない
+- **シングルモジュール**: シンプルだが、ポートフォリオとして設計力を示せない
 
 ### Reference
 - [Android Architecture Guide](https://developer.android.com/topic/architecture)
+- [Guide to Android app modularization](https://developer.android.com/topic/modularization)
 
 ---
 
@@ -490,12 +632,20 @@ fun ChainListScreen(viewModel: ChainListViewModel) {
 |------|---------|------|
 | 言語 | Kotlin | Android公式推奨、Null安全性 |
 | UIフレームワーク | Jetpack Compose + Material 3 | モダン、宣言的UI |
-| データ読み取り | Firebase Android SDK | Kotlin対応、オフラインキャッシュ |
+| リモートデータ | Firebase Android SDK (Firestore) | Kotlin対応、リアルタイム更新 |
+| ローカルデータ | Room Database | オフライン対応、Single Source of Truth |
 | 認証 | Firebase Authentication | Googleログイン、AuthStateListener |
-| X Post埋め込み | WebView + Twitter Widgets | 公式API、WebViewが標準アプローチ |
-| フィルタ永続化 | DataStore Preferences | 型安全、コルーチン対応 |
-| アーキテクチャ | MVVM + Clean Architecture | Google推奨、テスタビリティ |
+| 設定永続化 | DataStore Preferences | 型安全、コルーチン対応 |
+| DI | Hilt | Android公式推奨、Jetpack統合 |
+| アーキテクチャ | MVVM + Clean Architecture + マルチモジュール | Google推奨、設計力証明 |
 | 状態管理 | StateFlow + Compose State | Kotlinネイティブ、Compose統合 |
-| テスト | JUnit 5 + MockK + Compose Testing | Kotlin対応、モダン |
+| テスト | JUnit 5 + MockK + Turbine | Kotlin対応、モダン |
+| 品質基盤 | Lint + Detekt + JaCoCo | 静的解析、カバレッジ計測 |
+| CI/CD | GitHub Actions | 自動テスト、自動配信 |
 
-全ての技術選定は Constitution に準拠しています。
+全ての技術選定は Constitution および `docs/preparation/technical_vision.md` に準拠しています。
+
+### 2025/12/14 再確認結果
+
+Android Developers公式ドキュメントを確認し、上記技術選定が2025年12月時点でも公式推奨に沿っていることを確認。
+唯一、JUnit 5は公式採用前だが、コミュニティ標準として広く使用されており問題なし。
