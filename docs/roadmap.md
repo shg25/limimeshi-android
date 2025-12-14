@@ -79,7 +79,7 @@
 - [x] `specs/003-favorites/`を移行（limimeshi-docsから）
 - [x] `memory/constitution.md`をコピー配置
 - [x] templates/、.claude/commands/をコピー
-- [ ] **Android技術選定の再確認**（詳細は下記参照）
+- [x] **Android技術選定の再確認**（2025/12/14完了、ADR-001参照）
 
 ---
 
@@ -107,17 +107,17 @@ Phase1（2025/11）時点で`specs/002-chain-list/research.md`に技術選定を
 | アーキテクチャ | MVVM + Clean Architecture | Android Architecture Guide |
 | 状態管理 | StateFlow + Compose State | Kotlin公式 + Android公式 |
 | DI | Hilt | Android公式推奨 |
-| テスト | JUnit 5 + MockK + Turbine | ※要再確認（公式はJUnit 4 + Mockito） |
+| テスト | JUnit 5 + MockK + Turbine | コミュニティ推奨（公式はJUnit 4だが問題なし） |
 | UIテスト | Compose Testing | Android公式 |
 
-### 着手時の確認タスク
+### 着手時の確認タスク ✅
 
-- [ ] [Android Developers - Testing](https://developer.android.com/training/testing)で推奨ライブラリを確認
-- [ ] [Android Developers - App architecture](https://developer.android.com/topic/architecture)で最新パターンを確認
-- [ ] 就活求人で求められているライブラリを調査・反映
-- [ ] `specs/002-chain-list/research.md`を最新化
-- [ ] `specs/003-favorites/research.md`を最新化（002と整合性を取る）
-- [ ] 技術選定の決定をADRとして記録（`docs/adr/`）
+- [x] [Android Developers - Testing](https://developer.android.com/training/testing)で推奨ライブラリを確認（2025/12/14）
+- [x] [Android Developers - App architecture](https://developer.android.com/topic/architecture)で最新パターンを確認（2025/12/14）
+- [x] 就活求人で求められているライブラリを調査・反映（`docs/preparation/technical_vision.md`に反映済み）
+- [x] `specs/002-chain-list/research.md`を最新化（2025/12/14）
+- [x] `specs/003-favorites/research.md`を最新化（2025/12/14）
+- [x] 技術選定の決定をADRとして記録（`docs/adr/001-adopt-portfolio-driven-tech-stack.md`）
 
 ### 参考リンク
 
@@ -202,6 +202,7 @@ Phase1（2025/11）時点で`specs/002-chain-list/research.md`に技術選定を
 
 ## 更新履歴
 
+- 2025/12/14：Android技術選定の再確認完了、ADR-001作成、research.md更新
 - 2025/12/14：Phase0-3完了（Lint/Detekt/Hilt/JUnit5/MockK/Turbine/JaCoCo）
 - 2025/12/14：Phase0-2完了、JaCoCoをPhase0-3に移動、ci.ymlのbuildジョブ軽量化
 - 2025/12/14：Phase0-1完了、Phase0-1.5→Phase0-5に移動（MVP後）

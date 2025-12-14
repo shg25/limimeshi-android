@@ -2,11 +2,24 @@
 
 - **Feature**: 003-favorites
 - **Date**: 2025-11-28
-- **Status**: Phase 0 - Research  
+- **Updated**: 2025-12-14
+- **Status**: Phase 0 - Research
 
 ## Overview
 
 お気に入り登録機能の実装に必要な技術選定と設計パターンの調査結果（Android版）
+
+## Strategy Update（2025/12/07）
+
+**方針変更：YAGNI緩和 → ポートフォリオ戦略**
+
+本プロジェクトの目的が「Androidエンジニアとしての専門性・技術力の証明」に変更されたため、以下の方針を採用：
+
+- **技術要素の網羅的導入**: 多くのライブラリ・パターンを実装し、技術幅を証明
+- **マルチモジュール構成**: 早期からモジュール分割を実施し、設計力を証明
+- **002-chain-listとの整合性**: アーキテクチャ・技術選定は002と統一
+
+詳細は `docs/preparation/technical_vision.md` および `002-chain-list/research.md` を参照。
 
 ## 1. Firebase Authentication（ログイン状態の管理）
 
@@ -242,7 +255,15 @@ fun FavoriteButton(
 |------|---------|------|
 | 認証状態管理 | Firebase Authentication (AuthStateListener) | リアルタイム監視、Kotlin完全対応 |
 | データ永続化 | Firestore サブコレクション | ユーザーごとの隔離、Security Rules簡潔 |
+| ローカルキャッシュ | Room Database | オフライン対応（002と共通） |
 | 集約データ更新 | Firestore Transactions | データ整合性、同時実行制御 |
 | UIコンポーネント | Jetpack Compose + Material 3 | 宣言的UI、002との一貫性 |
+| アーキテクチャ | MVVM + Clean Architecture + マルチモジュール | 002と統一 |
+| DI | Hilt | Android公式推奨 |
 
-全ての技術選定は Constitution に準拠しています。
+全ての技術選定は Constitution および `docs/preparation/technical_vision.md` に準拠しています。
+
+### 2025/12/14 再確認結果
+
+Android Developers公式ドキュメントを確認し、上記技術選定が2025年12月時点でも公式推奨に沿っていることを確認。
+詳細は `002-chain-list/research.md` を参照。
