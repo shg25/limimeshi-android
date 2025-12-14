@@ -19,7 +19,7 @@
 - **マルチモジュール構成**: 早期からモジュール分割を実施し、設計力を証明
 - **002-chain-listとの整合性**: アーキテクチャ・技術選定は002と統一
 
-詳細は `docs/preparation/technical_vision.md` および `002-chain-list/research.md` を参照。
+詳細は `docs/roadmap.md`（方針変更セクション）および `002-chain-list/research.md` を参照。
 
 ## 1. Firebase Authentication（ログイン状態の管理）
 
@@ -261,7 +261,7 @@ fun FavoriteButton(
 | アーキテクチャ | MVVM + Clean Architecture + マルチモジュール | 002と統一 |
 | DI | Hilt | Android公式推奨 |
 
-全ての技術選定は Constitution および `docs/preparation/technical_vision.md` に準拠しています。
+全ての技術選定は `.specify/memory/constitution.md` および `docs/adr/001-adopt-portfolio-driven-tech-stack.md` に準拠しています。
 
 ### 2025/12/14 再確認結果
 

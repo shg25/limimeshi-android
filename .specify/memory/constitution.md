@@ -15,11 +15,11 @@ limimeshi全体の憲法を継承しつつ、本リポジトリではAndroid開�
 
 #### I. Spec-Driven + Vertical Slice（仕様駆動 × 縦割り）
 
-**出典**：[GitHub Spec Kit公式](https://github.com/github/spec-kit) / docs/spec配下
+**出典**：[GitHub Spec Kit公式](https://github.com/github/spec-kit)
 
 仕様駆動開発を実践
 - Spec Kitのワークフロー（`/speckit-specify` → `/speckit-clarify` → `/speckit-plan` → `/speckit-tasks`）を基本とする
-- 全ての機能はspec（`docs/spec/`）から開始
+- 全ての機能は`.specify/specs/`から開始
 - 実装はVertical Slice（UI → ViewModel → UseCase → Repository → DataSource）単位で進める
 - 「仕様で何を証明したいか」を先に決めてからコードを書く
 
@@ -56,13 +56,11 @@ Android Developersが推奨するモダンアーキテクチャに沿う
 
 #### V. AI-Assisted, Human-Owned（AI支援 × 人間責任）
 
-**出典**：docs/preparation/technical_vision.md
-
 Claude Code / ChatGPTを積極的に活用するが、責任は常に人間が持つ
 - 仕様・アーキテクチャ・公開インターフェースは人間が決定
 - AIが生成したコードは必ずレビュー
 - 秘密情報（鍵・トークン）はプロンプトに含めない
-- AI利用方針の詳細は`docs/preparation/technical_vision.md`に記載
+- 開発時のAI利用ガイドはCLAUDE.mdを参照
 
 ### Android固有の制約（Android Constraints）
 
@@ -146,7 +144,7 @@ GitHub Actionsでlint / test / buildを自動実行
 - 非同期：Kotlin Coroutines / Flow
 - DI：Hilt
 - データ
-  - Remote：Retrofit + OkHttp
+  - Remote：Firebase SDK (Firestore)
   - Local：Room / DataStore
 - グラフ描画：Compose Charts（予定）
 
@@ -157,7 +155,7 @@ GitHub Actionsでlint / test / buildを自動実行
 - 配布：Firebase App Distribution（段階的導入）
 - 本番配信：Google Play Console（自動デプロイは将来的に検討）
 
-詳細は`docs/design/architecture.md`および`docs/design/module_structure.md`を参照
+詳細は`docs/adr/001-adopt-portfolio-driven-tech-stack.md`および`docs/adr/002-multimodule-architecture.md`を参照
 
 ## ドキュメント管理
 
@@ -171,7 +169,7 @@ GitHub Actionsでlint / test / buildを自動実行
 
 ### Spec / ADR
 
-- 機能仕様は`docs/spec/`にSpec Kitの形式で記録
+- 機能仕様は`.specify/specs/`にSpec Kitの形式で記録
 - アーキテクチャ・技術選定の重要な決定はADRで管理
   - Context（背景）
   - Decision（決定）
@@ -187,7 +185,7 @@ GitHub Actionsでlint / test / buildを自動実行
 
 ### レビュー・承認
 
-- 全てのPRは、この憲法および`docs/preparation/technical_vision.md`への準拠を確認
+- 全てのPRは、この憲法への準拠を確認
 - アーキテクチャやモジュール構成に関わる変更は、可能な限りADRを伴う
 - 開発時のAI利用ガイドはCLAUDE.mdを参照
 
@@ -198,4 +196,4 @@ GitHub Actionsでlint / test / buildを自動実行
 
 ---
 
-**Version**: 1.0.0 (Android Edition) | **Ratified**: 2025/12/07 | **Last Amended**: 2025/12/07
+**Version**: 1.1.0 (Android Edition) | **Ratified**: 2025/12/07 | **Last Amended**: 2025/12/15

@@ -110,7 +110,7 @@ feature/
 
 - [Android Architecture Guide](https://developer.android.com/topic/architecture)
 - [Guide to Android app modularization](https://developer.android.com/topic/modularization)
-- [docs/preparation/technical_vision.md](../preparation/technical_vision.md)
+- [.specify/memory/constitution.md](../../.specify/memory/constitution.md)（開発原則）
 - [.specify/specs/002-chain-list/research.md](../../.specify/specs/002-chain-list/research.md)
 
 ## Verification (2025/12/14)
