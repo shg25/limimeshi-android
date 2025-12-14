@@ -2,8 +2,10 @@ package com.shg25.limimeshi
 
 import android.app.Application
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
+@HiltAndroidApp
 class LimimeshiApplication : Application() {
 
     override fun onCreate() {

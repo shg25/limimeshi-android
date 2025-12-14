@@ -3,7 +3,7 @@
 - **Feature Branch**: `feature/phase0-ci-cd-firebase`
 - **Created**: 2025-12-10
 - **Updated**: 2025-12-14
-- **Status**: Implemented
+- **Status**: In Progress (US1-4 Implemented, US5 Pending)
 - **Input**: Phase0としてCI/CD基盤を構築。GitHub Actionsによるlint/test/build自動化、Firebase App Distributionへのdev版配信、Google Play内部テストへのprod版配信を実現する。ポートフォリオとしてDevOps理解を示す。
 
 ## User Scenarios & Testing *(mandatory)*
@@ -78,6 +78,26 @@ mainブランチへのpush時、prodRelease版AABが自動でGoogle Play内部�
 
 ---
 
+### User Story 5 - 品質基盤（静的解析・テスト環境） (Priority: P2)
+
+開発者がコード品質を維持できるよう、静的解析ツールとテスト環境を整備する。
+
+**Why this priority**: CI/CD構築後、コード品質を保証するツール群を整備。MVP実装前に基盤を整える。
+
+**Independent Test**: 静的解析ツールがエラーを検出し、テストフレームワークでテストが実行できれば価値を提供できる。
+
+**Acceptance Scenarios**:
+
+1. **Given** Lint設定済み, **When** `./gradlew lint`を実行, **Then** カスタムルールに基づいて警告/エラーが検出される
+2. **Given** Detekt設定済み, **When** `./gradlew detekt`を実行, **Then** Kotlin固有のコードスメルが検出される
+3. **Given** Hilt設定済み, **When** `@HiltAndroidApp`アノテーションを使用, **Then** DIコンテナが初期化される
+4. **Given** JUnit5設定済み, **When** 単体テストを作成, **Then** JUnit5のアサーションとライフサイクルが使用できる
+5. **Given** MockK設定済み, **When** モックを作成, **Then** Kotlinフレンドリーなモックが動作する
+6. **Given** Turbine設定済み, **When** Flow/StateFlowをテスト, **Then** ストリームの値を順番に検証できる
+7. **Given** JaCoCo設定済み, **When** `./gradlew jacocoTestReport`を実行, **Then** カバレッジレポートが生成される
+
+---
+
 ### Edge Cases
 
 - **シークレット未設定**: 必要なシークレット（署名鍵、サービスアカウント）が未設定の場合、明確なエラーメッセージで失敗
@@ -112,6 +132,15 @@ mainブランチへのpush時、prodRelease版AABが自動でGoogle Play内部�
 - **FR-014**: システムは例外発生時にCrashlyticsに例外情報を記録しなければならない
 - **FR-015**: システムはAnalyticsHelperを通じてFirebase Analyticsにイベントを送信できなければならない
 - **FR-016**: AnalyticsHelperは画面表示、お気に入り操作、ソート変更等の主要イベントをサポートしなければならない
+
+#### 品質基盤
+- **FR-017**: システムはAndroid Lintのカスタムルール設定（lint.xml）を持たなければならない
+- **FR-018**: システムはDetektによるKotlin静的解析を実行できなければならない
+- **FR-019**: システムはHiltによるDIコンテナを初期化できなければならない
+- **FR-020**: システムはJUnit5によるテスト実行をサポートしなければならない
+- **FR-021**: システムはMockKによるモック作成をサポートしなければならない
+- **FR-022**: システムはTurbineによるFlow/StateFlowテストをサポートしなければならない
+- **FR-023**: システムはJaCoCoによるカバレッジレポートを生成できなければならない
 
 ### Non-Functional Requirements
 

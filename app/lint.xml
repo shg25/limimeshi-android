@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!--
+    Lint設定カスタマイズ
+    https://developer.android.com/studio/write/lint
+    -->
+
+    <!-- エラーとして扱う -->
+    <issue id="HardcodedText" severity="error" />
+    <issue id="MissingTranslation" severity="error" />
+    <issue id="SetTextI18n" severity="error" />
+
+    <!-- 警告として扱う -->
+    <issue id="UnusedResources" severity="warning" />
+    <issue id="UnusedIds" severity="warning" />
+    <issue id="ContentDescription" severity="warning" />
+
+    <!-- 無効化（プロジェクト方針で対象外） -->
+    <!-- Compose Previewのため -->
+    <issue id="UnusedMaterialScaffoldPaddingParameter" severity="ignore" />
+
+    <!-- 生成コードの除外 -->
+    <issue id="all">
+        <ignore path="**/build/**" />
+        <ignore path="**/*_Hilt*.kt" />
+        <ignore path="**/*_Factory.kt" />
+        <ignore path="**/*_MembersInjector.kt" />
+    </issue>
+</lint>
