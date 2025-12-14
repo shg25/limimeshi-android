@@ -38,12 +38,12 @@
 - [x] Firebase App Distribution配信（devRelease）
 - [x] Google Play内部テスト配信（prodRelease）※status: draft
 
-#### Phase0-3：品質基盤（予定）
-- [ ] Lint設定カスタマイズ
-- [ ] Detekt設定
-- [ ] Hilt基本設定
-- [ ] JUnit5/MockK/Turbine導入
-- [ ] JaCoCoカバレッジ計測
+#### Phase0-3：品質基盤 ✅
+- [x] Lint設定カスタマイズ（lint.xml）
+- [x] Detekt設定（detekt.yml、CI統合）
+- [x] Hilt基本設定（@HiltAndroidApp、AppModule）
+- [x] JUnit5/MockK/Turbine導入
+- [x] JaCoCoカバレッジ計測（CI統合）
 
 #### Phase0-4：Google Play公開準備（MVP実装完了後）
 - [ ] Google Play Consoleアプリセットアップ完了
@@ -202,6 +202,7 @@ Phase1（2025/11）時点で`specs/002-chain-list/research.md`に技術選定を
 
 ## 更新履歴
 
+- 2025/12/14：Phase0-3完了（Lint/Detekt/Hilt/JUnit5/MockK/Turbine/JaCoCo）
 - 2025/12/14：Phase0-2完了、JaCoCoをPhase0-3に移動、ci.ymlのbuildジョブ軽量化
 - 2025/12/14：Phase0-1完了、Phase0-1.5→Phase0-5に移動（MVP後）
 - 2025/12/11：Phase0-1.5（Firebaseセキュリティ対策）を追加
