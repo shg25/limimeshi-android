@@ -13,8 +13,18 @@
 
 ## Path Conventions
 
-- **limimeshi-android repository**: `app/src/main/java/com/shg25/limimeshi/`, `app/src/test/`, `app/src/androidTest/`
-- パスはplan.mdのProject Structureセクションに基づく
+マルチモジュール構成（ADR-001参照、002-chain-listと統一）:
+
+- **app/**: `app/src/main/java/com/shg25/limimeshi/` - アプリエントリポイント
+- **core/designsystem/**: `core/designsystem/src/main/java/com/shg25/limimeshi/core/designsystem/` - 共通UI
+- **core/model/**: `core/model/src/main/java/com/shg25/limimeshi/core/model/` - ドメインモデル
+- **core/domain/**: `core/domain/src/main/java/com/shg25/limimeshi/core/domain/` - UseCase
+- **core/data/**: `core/data/src/main/java/com/shg25/limimeshi/core/data/` - Repository、DataSource
+- **feature/chainlist/**: `feature/chainlist/src/main/java/com/shg25/limimeshi/feature/chainlist/` - チェーン店一覧機能（002）
+- **feature/favorites/**: `feature/favorites/src/main/java/com/shg25/limimeshi/feature/favorites/` - お気に入り機能
+- **テスト**: 各モジュールの `src/test/`, `src/androidTest/`
+
+パスはplan.mdのProject Structureセクションに基づく
 
 ---
 
@@ -22,8 +32,9 @@
 
 **Purpose**: プロジェクトの初期化と基本構造の構築（002-chain-listで大部分が完了済み）
 
-- [ ] T001 limimeshi-androidリポジトリのプロジェクト構造を確認（ui/, data/repository/, data/model/, util/, di/が存在することを確認）
-- [ ] T002 [P] Material Icons依存関係が追加されていることを確認（androidx.compose.material:material-icons-extended）、未追加の場合は追加
+- [ ] T001 limimeshi-androidリポジトリのマルチモジュール構造を確認（app/, core/, feature/が存在することを確認）
+- [ ] T001a feature/favorites/モジュールを作成（002で作成されていない場合）
+- [ ] T002 [P] Material Icons依存関係がcore/designsystemに追加されていることを確認（androidx.compose.material:material-icons-extended）、未追加の場合は追加
 
 ---
 
@@ -34,8 +45,10 @@
 **⚠️ CRITICAL**: このフェーズが完了するまで、ユーザーストーリーの作業を開始できません
 
 - [ ] T003 Firestore Security Rulesを更新（/users/{userId}/favorites/{chainId}の読み書きルール、/chains/{chainId}のfavoriteCount更新ルール）
-- [ ] T004 Kotlinデータクラス定義を作成 data/model/Favorite.kt（Favorite型、FavoriteState型）
-- [ ] T005 Chain.ktにfavoriteCountフィールドを追加 data/model/Chain.kt（Int型、デフォルト0）
+- [ ] T004 Kotlinデータクラス定義を作成 core/model/.../Favorite.kt（Favorite型、FavoriteState型）
+- [ ] T004a Room Entity定義を作成 core/data/.../datasource/local/entity/FavoriteEntity.kt
+- [ ] T004b Room DAO定義を作成 core/data/.../datasource/local/FavoriteDao.kt
+- [ ] T005 Chain.ktにfavoriteCountフィールドを追加 core/model/.../Chain.kt（Int型、デフォルト0）
 
 **Checkpoint**: 基盤が整い、ユーザーストーリーの並列実装が可能になります
 
@@ -51,18 +64,19 @@
 
 > **NOTE: これらのテストを最初に書き、実装前に失敗することを確認**
 
-- [ ] T006 [P] [US1] お気に入りボタンコンポーネントの単体テストを作成 app/src/test/java/.../ui/components/FavoriteButtonTest.kt（ログインユーザーのボタン有効化、未ログインユーザーのボタン無効化、登録・解除状態の表示切り替え、ローディング状態）
-- [ ] T007 [P] [US1] お気に入りリポジトリの単体テストを作成 app/src/test/java/.../data/repository/FavoritesRepositoryTest.kt（登録・解除処理、Firestore Transaction確認）
+- [ ] T006 [P] [US1] お気に入りボタンコンポーネントの単体テストを作成 core/designsystem/src/test/.../component/FavoriteButtonTest.kt（ログインユーザーのボタン有効化、未ログインユーザーのボタン無効化、登録・解除状態の表示切り替え、ローディング状態）
+- [ ] T007 [P] [US1] お気に入りリポジトリの単体テストを作成 core/data/src/test/.../repository/FavoritesRepositoryTest.kt（登録・解除処理、Firestore Transaction確認）
 
 ### Implementation for User Story 1
 
-- [ ] T008 [P] [US1] お気に入りボタンコンポーネントを作成 ui/components/FavoriteButton.kt（Material 3 IconButton + Favorite/FavoriteBorderアイコン、ローディング状態、無効化状態）
-- [ ] T009 [US1] FavoritesRepositoryを作成 data/repository/FavoritesRepository.kt（Firestoreからお気に入り状態を取得、登録・解除処理、Transactionでカウント更新）
-- [ ] T010 [US1] ChainListViewModelに認証状態を追加 ui/chain/ChainListViewModel.kt（Firebase Auth AuthStateListener、ログインユーザーのみお気に入りボタン有効化）
-- [ ] T011 [US1] ChainListViewModelにお気に入り状態を追加 ui/chain/ChainListViewModel.kt（お気に入りチェーンIDリストを管理、登録・解除処理）
-- [ ] T012 [US1] ChainCardへのお気に入りボタン統合 ui/chain/ChainCard.kt（FavoriteButtonコンポーネントを追加、chainIdごとのお気に入り状態を表示）
-- [ ] T013 [US1] エラーハンドリングの追加 ui/chain/ChainListScreen.kt（Snackbar + SnackbarHostState でエラーメッセージ表示、permission-denied/unavailableエラーの処理）
-- [ ] T014 [US1] ローディング状態の管理 ui/chain/ChainListViewModel.kt（chainIdごとのローディング状態をMapで管理）
+- [ ] T008 [P] [US1] お気に入りボタンコンポーネントを作成 core/designsystem/.../component/FavoriteButton.kt（Material 3 IconButton + Favorite/FavoriteBorderアイコン、ローディング状態、無効化状態）
+- [ ] T009 [US1] FavoritesRepositoryを作成 core/data/.../repository/FavoritesRepository.kt（Firestoreからお気に入り状態を取得、Roomにキャッシュ、登録・解除処理、Transactionでカウント更新）
+- [ ] T009a [US1] ToggleFavoriteUseCaseを作成 core/domain/.../ToggleFavoriteUseCase.kt（Repository呼び出し、お気に入り登録・解除ロジック）
+- [ ] T010 [US1] ChainListViewModelに認証状態を追加 feature/chainlist/.../ChainListViewModel.kt（Firebase Auth AuthStateListener、ログインユーザーのみお気に入りボタン有効化）
+- [ ] T011 [US1] ChainListViewModelにお気に入り状態を追加 feature/chainlist/.../ChainListViewModel.kt（お気に入りチェーンIDリストを管理、UseCase呼び出し）
+- [ ] T012 [US1] ChainCardへのお気に入りボタン統合 feature/chainlist/.../ChainCard.kt（FavoriteButtonコンポーネントを追加、chainIdごとのお気に入り状態を表示）
+- [ ] T013 [US1] エラーハンドリングの追加 feature/chainlist/.../ChainListScreen.kt（Snackbar + SnackbarHostState でエラーメッセージ表示、permission-denied/unavailableエラーの処理）
+- [ ] T014 [US1] ローディング状態の管理 feature/chainlist/.../ChainListViewModel.kt（chainIdごとのローディング状態をMapで管理）
 
 **Checkpoint**: この時点で、User Story 1は完全に機能し、独立してテスト可能です（お気に入り登録・解除機能が動作）
 
@@ -78,13 +92,13 @@
 
 ### Tests for User Story 2
 
-- [ ] T015 [P] [US2] お気に入り登録数表示の単体テストを作成 app/src/test/java/.../ui/components/FavoriteCountTest.kt（0件時の非表示、1件以上の表示確認）
+- [ ] T015 [P] [US2] お気に入り登録数表示の単体テストを作成 core/designsystem/src/test/.../component/FavoriteCountTest.kt（0件時の非表示、1件以上の表示確認）
 
 ### Implementation for User Story 2
 
-- [ ] T016 [P] [US2] お気に入り登録数表示コンポーネントを作成 ui/components/FavoriteCount.kt（count=0の場合は非表示、それ以外は「♥ {count}人がお気に入り登録」を表示）
-- [ ] T017 [US2] ChainCardへのお気に入り登録数の追加 ui/chain/ChainCard.kt（FavoriteCountコンポーネントを追加、chain.favoriteCountを渡す）
-- [ ] T018 [US2] お気に入りボタンでの登録数ローカル更新 ui/chain/ChainListViewModel.kt（登録・解除時にfavoriteCountをローカルステートで即座に更新、Optimistic UI）
+- [ ] T016 [P] [US2] お気に入り登録数表示コンポーネントを作成 core/designsystem/.../component/FavoriteCount.kt（count=0の場合は非表示、それ以外は「♥ {count}人がお気に入り登録」を表示）
+- [ ] T017 [US2] ChainCardへのお気に入り登録数の追加 feature/chainlist/.../ChainCard.kt（FavoriteCountコンポーネントを追加、chain.favoriteCountを渡す）
+- [ ] T018 [US2] お気に入りボタンでの登録数ローカル更新 feature/chainlist/.../ChainListViewModel.kt（登録・解除時にfavoriteCountをローカルステートで即座に更新、Optimistic UI）
 
 **Checkpoint**: この時点で、User Stories 1 AND 2は両方とも独立して動作します（お気に入り登録・解除＋登録数表示）
 
@@ -125,10 +139,10 @@
 
 ## 成果物の確認
 
-### 総タスク数: 26タスク
+### 総タスク数: 30タスク（マルチモジュール対応により増加）
 
 ### ユーザーストーリーごとのタスク数:
-- **User Story 1（チェーン店のお気に入り登録・解除）**: 9タスク（テスト2 + 実装7）
+- **User Story 1（チェーン店のお気に入り登録・解除）**: 10タスク（テスト2 + 実装8）- UseCase追加
 - **User Story 2（お気に入り登録数の表示）**: 4タスク（テスト1 + 実装3）
 
 ### 各ストーリーの独立テスト基準:
