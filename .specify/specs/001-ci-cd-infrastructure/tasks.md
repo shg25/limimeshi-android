@@ -2,7 +2,7 @@
 
 - **Input**: Design documents from `/specs/001-ci-cd-infrastructure/`
 - **Prerequisites**: plan.md (required), spec.md (required for user stories)
-- **Status**: ✅ All tasks completed (2025-12-14)
+- **Status**: 🚧 Phase 5 in progress (2025-12-14)
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -80,6 +80,57 @@
 
 ---
 
+## Phase 5: 品質基盤（User Story 5）
+
+**Purpose**: 静的解析ツールとテスト環境の整備
+
+### 5-1: Lint設定カスタマイズ
+
+- [ ] T034 [P] lint.xml作成（app/lint.xml）
+- [ ] T035 [P] app/build.gradle.ktsにlint設定追加（warningsAsErrors等）
+
+### 5-2: Detekt設定
+
+- [ ] T036 [P] Detektプラグイン追加（gradle/libs.versions.toml）
+- [ ] T037 [P] detekt.yml設定ファイル作成（config/detekt/detekt.yml）
+- [ ] T038 app/build.gradle.ktsにDetektタスク設定
+- [ ] T039 ci.ymlにDetektステップ追加
+
+### 5-3: Hilt基本設定
+
+- [ ] T040 [P] Hilt依存関係追加（gradle/libs.versions.toml）
+- [ ] T041 app/build.gradle.ktsにHiltプラグイン・依存関係追加
+- [ ] T042 LimimeshiApplicationに@HiltAndroidApp追加
+- [ ] T043 サンプルDIモジュール作成（di/AppModule.kt）
+
+### 5-4: JUnit5/MockK/Turbine導入
+
+- [ ] T044 [P] JUnit5依存関係追加（gradle/libs.versions.toml）
+- [ ] T045 [P] MockK依存関係追加（gradle/libs.versions.toml）
+- [ ] T046 [P] Turbine依存関係追加（gradle/libs.versions.toml）
+- [ ] T047 app/build.gradle.ktsにテスト依存関係追加
+- [ ] T048 app/build.gradle.ktsにuseJUnitPlatform()設定
+- [ ] T049 サンプルテスト作成（JUnit5 + MockK + Turbine確認用）
+
+### 5-5: JaCoCoカバレッジ計測
+
+- [ ] T050 [P] JaCoCoプラグイン設定追加（app/build.gradle.kts）
+- [ ] T051 JaCoCoレポート生成タスク設定
+- [ ] T052 ci.ymlにカバレッジレポートステップ追加
+- [ ] T053 カバレッジレポートをアーティファクトとしてアップロード
+
+### 5-6: 動作確認
+
+- [ ] T054 `./gradlew lint`実行確認
+- [ ] T055 `./gradlew detekt`実行確認
+- [ ] T056 `./gradlew test`実行確認（JUnit5動作）
+- [ ] T057 `./gradlew jacocoTestReport`実行確認
+- [ ] T058 CI全体の動作確認（PR作成で全ステップ成功）
+
+**Checkpoint**: 品質基盤完了、MVP実装の準備完了
+
+---
+
 ## Summary
 
 | Phase | タスク数 | 完了 |
@@ -88,4 +139,5 @@
 | Phase 2: CD Firebase | 8 | 8 |
 | Phase 3: CD Google Play | 8 | 8 |
 | Phase 4: Observability | 8 | 8 |
-| **Total** | **33** | **33** |
+| Phase 5: 品質基盤 | 25 | 0 |
+| **Total** | **58** | **33** |

@@ -213,6 +213,232 @@ dev/prodは共存可能（同一端末に両方インストール可）
 
 ---
 
+## 8. Android Lint
+
+### 選定理由
+- Android SDK標準の静的解析ツール
+- 追加設定なしで利用可能
+- Android固有の問題を検出
+
+### カスタマイズ
+- `lint.xml`: ルールの有効/無効、重大度変更
+- `app/build.gradle.kts`: `lintOptions`設定
+
+### 主要ルール
+
+| カテゴリ | 例 |
+|---------|-----|
+| Correctness | 非推奨API使用、リソース参照エラー |
+| Performance | ViewHolderパターン未使用、過剰な描画 |
+| Security | ハードコードされた秘密情報 |
+| Accessibility | コンテンツ説明欠如 |
+
+---
+
+## 9. Detekt
+
+### 選定理由
+- Kotlin専用の静的解析ツール
+- コードスメル検出に特化
+- Android Lintと補完関係
+
+### バージョン
+- detekt: 1.23.x（最新安定版）
+
+### 設定ファイル
+- `config/detekt/detekt.yml`
+
+### 主要ルールセット
+
+| ルールセット | 内容 |
+|-------------|------|
+| complexity | 循環的複雑度、メソッド長 |
+| naming | 命名規則（camelCase等） |
+| style | コーディングスタイル |
+| potential-bugs | バグになりやすいパターン |
+
+---
+
+## 10. Hilt
+
+### 選定理由
+- Android公式推奨のDIフレームワーク
+- Dagger2をAndroid向けに簡略化
+- Jetpack統合（ViewModel、WorkManager等）
+
+### バージョン
+- hilt: 2.51.x（最新安定版）
+
+### 主要アノテーション
+
+| アノテーション | 用途 |
+|---------------|------|
+| @HiltAndroidApp | Applicationクラス |
+| @AndroidEntryPoint | Activity/Fragment |
+| @Inject | コンストラクタインジェクション |
+| @Module | 依存関係定義モジュール |
+| @Provides | インスタンス提供メソッド |
+| @Singleton | シングルトンスコープ |
+
+### セットアップ
+
+```kotlin
+// Application
+@HiltAndroidApp
+class LimimeshiApplication : Application()
+
+// Activity
+@AndroidEntryPoint
+class MainActivity : ComponentActivity()
+```
+
+---
+
+## 11. JUnit5
+
+### 選定理由
+- モダンなテストフレームワーク
+- パラメータ化テスト、ネストテスト対応
+- より柔軟なライフサイクル
+
+### バージョン
+- junit-jupiter: 5.10.x
+
+### JUnit4との違い
+
+| 機能 | JUnit4 | JUnit5 |
+|------|--------|--------|
+| パッケージ | org.junit | org.junit.jupiter |
+| アサーション | Assert.assertEquals | Assertions.assertEquals |
+| ライフサイクル | @Before/@After | @BeforeEach/@AfterEach |
+| パラメータ化 | @Parameterized | @ParameterizedTest |
+
+### Android対応
+
+```kotlin
+// build.gradle.kts
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+```
+
+---
+
+## 12. MockK
+
+### 選定理由
+- Kotlin専用モックライブラリ
+- コルーチン対応
+- DSLによる可読性の高いモック定義
+
+### バージョン
+- mockk: 1.13.x
+
+### 基本パターン
+
+```kotlin
+val repository = mockk<UserRepository>()
+
+// スタブ設定
+every { repository.getUser(any()) } returns User("test")
+
+// コルーチン対応
+coEvery { repository.fetchUser(any()) } returns User("test")
+
+// 検証
+verify { repository.getUser("123") }
+```
+
+### Mockito比較
+
+| 機能 | Mockito | MockK |
+|------|---------|-------|
+| 構文 | Java風 | Kotlin DSL |
+| final class | mockito-inline必要 | デフォルト対応 |
+| コルーチン | 追加設定必要 | coEvery/coVerify |
+
+---
+
+## 13. Turbine
+
+### 選定理由
+- Flow/StateFlowテスト専用ライブラリ
+- Cash App製（Square系）
+- シンプルなAPI
+
+### バージョン
+- turbine: 1.1.x
+
+### 基本パターン
+
+```kotlin
+@Test
+fun `flow emits values in order`() = runTest {
+    val flow = flowOf(1, 2, 3)
+
+    flow.test {
+        assertEquals(1, awaitItem())
+        assertEquals(2, awaitItem())
+        assertEquals(3, awaitItem())
+        awaitComplete()
+    }
+}
+```
+
+### StateFlowテスト
+
+```kotlin
+@Test
+fun `stateflow updates correctly`() = runTest {
+    val viewModel = MyViewModel()
+
+    viewModel.uiState.test {
+        assertEquals(UiState.Loading, awaitItem())
+        viewModel.loadData()
+        assertEquals(UiState.Success, awaitItem())
+    }
+}
+```
+
+---
+
+## 14. JaCoCo
+
+### 選定理由
+- Javaエコシステムで標準的なカバレッジツール
+- Gradle統合が容易
+- HTML/XMLレポート生成
+
+### レポート種類
+
+| 形式 | 用途 |
+|------|------|
+| HTML | ブラウザで視覚的に確認 |
+| XML | CI/CDツール連携（Codecov等） |
+| CSV | 外部ツールでの分析 |
+
+### Gradle設定
+
+```kotlin
+plugins {
+    id("jacoco")
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+}
+```
+
+### 除外パターン
+- 自動生成コード（Hilt、Compose）
+- BuildConfig、R.class
+
+---
+
 ## References
 
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
@@ -220,3 +446,10 @@ dev/prodは共存可能（同一端末に両方インストール可）
 - [Google Play Developer API](https://developers.google.com/android-publisher)
 - [Timber GitHub](https://github.com/JakeWharton/timber)
 - [Firebase Analytics](https://firebase.google.com/docs/analytics)
+- [Android Lint](https://developer.android.com/studio/write/lint)
+- [Detekt](https://detekt.dev/)
+- [Hilt](https://developer.android.com/training/dependency-injection/hilt-android)
+- [JUnit5](https://junit.org/junit5/)
+- [MockK](https://mockk.io/)
+- [Turbine](https://github.com/cashapp/turbine)
+- [JaCoCo](https://www.jacoco.org/jacoco/)
