@@ -93,9 +93,11 @@ specs/002-chain-list/
 
 ### Source Code (limimeshi-android repository)
 
+公式ドキュメント「Guide to Android app modularization」に準拠（ADR-002参照）
+
 ```text
 limimeshi-android/
-├── app/                                              # アプリケーションエントリポイント
+├── app/                                              # アプリケーションモジュール
 │   ├── src/main/java/com/shg25/limimeshi/
 │   │   ├── LimimeshiApp.kt                           # Applicationクラス（@HiltAndroidApp）
 │   │   ├── MainActivity.kt                           # メインActivity
@@ -105,55 +107,12 @@ limimeshi-android/
 │   │       └── LimimeshiNavHost.kt                   # Navigation Compose
 │   └── google-services.json                          # Firebase設定（.gitignore）
 │
-├── core/
-│   ├── designsystem/                                 # 共通UI（Theme、Components）
-│   │   └── src/main/java/com/shg25/limimeshi/core/designsystem/
-│   │       ├── theme/
-│   │       │   ├── Theme.kt                          # Material 3テーマ
-│   │       │   ├── Color.kt                          # カラー定義
-│   │       │   └── Type.kt                           # タイポグラフィ
-│   │       └── component/
-│   │           ├── FavoritesFilter.kt                # お気に入りフィルタコンポーネント
-│   │           ├── SortSelector.kt                   # ソート順選択コンポーネント
-│   │           └── XPostEmbed.kt                     # X Post埋め込みコンポーネント
-│   │
-│   ├── model/                                        # ドメインモデル
-│   │   └── src/main/java/com/shg25/limimeshi/core/model/
-│   │       ├── Chain.kt                              # チェーン店モデル
-│   │       ├── Campaign.kt                           # キャンペーンモデル
-│   │       ├── CampaignStatus.kt                     # ステータス（Sealed Class）
-│   │       ├── ChainSortOrder.kt                     # ソート順（Enum）
-│   │       └── ChainWithCampaigns.kt                 # チェーン店+キャンペーン
-│   │
-│   ├── domain/                                       # UseCase
-│   │   └── src/main/java/com/shg25/limimeshi/core/domain/
-│   │       ├── GetChainListUseCase.kt                # チェーン店一覧取得
-│   │       └── GetCampaignStatusUseCase.kt           # ステータス判定ロジック
-│   │
-│   ├── data/                                         # Repository実装、DataSource
-│   │   └── src/main/java/com/shg25/limimeshi/core/data/
-│   │       ├── repository/
-│   │       │   ├── ChainRepository.kt                # チェーン店データ取得
-│   │       │   ├── CampaignRepository.kt             # キャンペーンデータ取得
-│   │       │   └── PreferencesRepository.kt          # フィルタ設定永続化
-│   │       ├── datasource/
-│   │       │   ├── remote/
-│   │       │   │   └── FirestoreDataSource.kt        # Firestore DataSource
-│   │       │   └── local/
-│   │       │       ├── ChainDao.kt                   # Room DAO
-│   │       │       └── LimimeshiDatabase.kt          # Room Database
-│   │       └── di/
-│   │           └── DataModule.kt                     # データ層のDI設定
-│   │
-│   └── common/                                       # 共通ユーティリティ
-│       └── src/main/java/com/shg25/limimeshi/core/common/
-│           └── DateTimeUtil.kt                       # 日時ユーティリティ
-│
-├── feature/
+├── feature/                                          # 機能モジュール群
 │   └── chainlist/                                    # チェーン店一覧機能
 │       ├── src/main/java/com/shg25/limimeshi/feature/chainlist/
 │       │   ├── ChainListScreen.kt                    # チェーン店一覧画面
 │       │   ├── ChainListViewModel.kt                 # ViewModel
+│       │   ├── ChainListUiState.kt                   # UI State
 │       │   ├── ChainCard.kt                          # チェーン店カードコンポーネント
 │       │   ├── CampaignItem.kt                       # キャンペーン項目コンポーネント
 │       │   └── navigation/
@@ -163,16 +122,68 @@ limimeshi-android/
 │       └── src/androidTest/java/com/shg25/limimeshi/feature/chainlist/
 │           └── ChainListScreenTest.kt                # UIテスト
 │
-├── build.gradle.kts
-├── settings.gradle.kts
-└── gradle.properties
+└── core/                                             # コアモジュール群
+    ├── ui/                                           # 共通UIコンポーネント
+    │   └── src/main/java/com/shg25/limimeshi/core/ui/
+    │       ├── theme/
+    │       │   ├── Theme.kt                          # Material 3テーマ
+    │       │   ├── Color.kt                          # カラー定義
+    │       │   └── Type.kt                           # タイポグラフィ
+    │       └── component/
+    │           ├── FavoritesFilter.kt                # お気に入りフィルタコンポーネント
+    │           ├── SortSelector.kt                   # ソート順選択コンポーネント
+    │           └── XPostEmbed.kt                     # X Post埋め込みコンポーネント
+    │
+    ├── model/                                        # ドメインモデル
+    │   └── src/main/java/com/shg25/limimeshi/core/model/
+    │       ├── Chain.kt                              # チェーン店モデル
+    │       ├── Campaign.kt                           # キャンペーンモデル
+    │       ├── CampaignStatus.kt                     # ステータス（Sealed Class）
+    │       ├── ChainSortOrder.kt                     # ソート順（Enum）
+    │       └── ChainWithCampaigns.kt                 # チェーン店+キャンペーン
+    │
+    ├── domain/                                       # ドメイン層（UseCase）
+    │   └── src/main/java/com/shg25/limimeshi/core/domain/
+    │       ├── GetChainListUseCase.kt                # チェーン店一覧取得
+    │       └── GetCampaignStatusUseCase.kt           # ステータス判定ロジック
+    │
+    ├── data/                                         # データ層（Repository）
+    │   └── src/main/java/com/shg25/limimeshi/core/data/
+    │       ├── repository/
+    │       │   ├── ChainRepository.kt                # チェーン店データ取得
+    │       │   ├── CampaignRepository.kt             # キャンペーンデータ取得
+    │       │   └── PreferencesRepository.kt          # フィルタ設定永続化
+    │       └── di/
+    │           └── DataModule.kt                     # データ層のDI設定
+    │
+    ├── network/                                      # ネットワーク層（Firebase）
+    │   └── src/main/java/com/shg25/limimeshi/core/network/
+    │       ├── FirestoreDataSource.kt                # Firestore DataSource
+    │       └── di/
+    │           └── NetworkModule.kt                  # ネットワーク層のDI設定
+    │
+    ├── database/                                     # ローカルデータベース（Room）
+    │   └── src/main/java/com/shg25/limimeshi/core/database/
+    │       ├── LimimeshiDatabase.kt                  # Room Database
+    │       ├── dao/
+    │       │   ├── ChainDao.kt                       # チェーン店DAO
+    │       │   └── CampaignDao.kt                    # キャンペーンDAO
+    │       ├── entity/
+    │       │   ├── ChainEntity.kt                    # チェーン店Entity
+    │       │   └── CampaignEntity.kt                 # キャンペーンEntity
+    │       └── di/
+    │           └── DatabaseModule.kt                 # データベース層のDI設定
+    │
+    └── common/                                       # 共通ユーティリティ
+        └── src/main/java/com/shg25/limimeshi/core/common/
+            └── DateTimeUtil.kt                       # 日時ユーティリティ
 ```
 
-**Structure Decision**: マルチモジュール構成（ADR-001参照）
-- **app/**: アプリケーションエントリポイント、ナビゲーション統合
-- **core/**: 共有コード（designsystem, model, domain, data, common）
-- **feature/**: 機能モジュール（chainlist, favorites）
-- Clean Architecture: Presentation（feature/） → Domain（core/domain） → Data（core/data）
+**Structure Decision**: 公式ドキュメント「Guide to Android app modularization」準拠（ADR-002参照）
+- **app module**: アプリケーションエントリポイント、DI統合、Navigation
+- **feature modules**: 機能ごとの画面・ViewModel（chainlist, favorites）
+- **core modules**: 共有コード（ui, model, domain, data, network, database, common）
+- 依存関係: feature → core:domain → core:data → core:network/database
 
 ## Complexity Tracking
 

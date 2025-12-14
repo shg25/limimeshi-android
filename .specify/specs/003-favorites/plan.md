@@ -94,9 +94,11 @@ specs/003-favorites/
 
 ### Source Code (limimeshi-android repository)
 
+公式ドキュメント「Guide to Android app modularization」に準拠（ADR-002参照）
+
 ```text
 limimeshi-android/
-├── app/                                              # アプリケーションエントリポイント
+├── app/                                              # アプリケーションモジュール
 │   ├── src/main/java/com/shg25/limimeshi/
 │   │   ├── LimimeshiApp.kt                           # Applicationクラス（@HiltAndroidApp）
 │   │   ├── MainActivity.kt                           # メインActivity
@@ -106,37 +108,7 @@ limimeshi-android/
 │   │       └── LimimeshiNavHost.kt                   # Navigation Compose
 │   └── google-services.json                          # Firebase設定（.gitignore）
 │
-├── core/
-│   ├── designsystem/                                 # 共通UI（Theme、Components）
-│   │   └── src/main/java/com/shg25/limimeshi/core/designsystem/
-│   │       ├── theme/
-│   │       │   └── Theme.kt                          # Material 3テーマ（002で作成済み）
-│   │       └── component/
-│   │           ├── FavoriteButton.kt                 # お気に入りボタンコンポーネント
-│   │           └── FavoriteCount.kt                  # お気に入り登録数表示コンポーネント
-│   │
-│   ├── model/                                        # ドメインモデル
-│   │   └── src/main/java/com/shg25/limimeshi/core/model/
-│   │       ├── Chain.kt                              # 002で作成済み
-│   │       ├── Campaign.kt                           # 002で作成済み
-│   │       └── Favorite.kt                           # お気に入りデータクラス
-│   │
-│   ├── domain/                                       # UseCase
-│   │   └── src/main/java/com/shg25/limimeshi/core/domain/
-│   │       └── ToggleFavoriteUseCase.kt              # お気に入り登録・解除UseCase
-│   │
-│   └── data/                                         # Repository実装、DataSource
-│       └── src/main/java/com/shg25/limimeshi/core/data/
-│           ├── repository/
-│           │   ├── ChainRepository.kt                # 002で作成済み
-│           │   └── FavoritesRepository.kt            # お気に入りリポジトリ
-│           └── datasource/
-│               ├── remote/
-│               │   └── FirestoreDataSource.kt        # Firestore DataSource（002で作成済み）
-│               └── local/
-│                   └── FavoriteDao.kt                # お気に入りRoom DAO
-│
-├── feature/
+├── feature/                                          # 機能モジュール群
 │   ├── chainlist/                                    # チェーン店一覧機能（002で作成済み）
 │   │   └── src/main/java/com/shg25/limimeshi/feature/chainlist/
 │   │       ├── ChainListScreen.kt                    # チェーン店一覧画面（お気に入りボタン統合）
@@ -149,16 +121,50 @@ limimeshi-android/
 │       └── src/androidTest/java/com/shg25/limimeshi/feature/favorites/
 │           └── FavoriteIntegrationTest.kt            # お気に入り統合テスト
 │
-├── build.gradle.kts
-├── settings.gradle.kts
-└── gradle.properties
+└── core/                                             # コアモジュール群
+    ├── ui/                                           # 共通UIコンポーネント
+    │   └── src/main/java/com/shg25/limimeshi/core/ui/
+    │       ├── theme/
+    │       │   └── Theme.kt                          # Material 3テーマ（002で作成済み）
+    │       └── component/
+    │           ├── FavoriteButton.kt                 # お気に入りボタンコンポーネント
+    │           └── FavoriteCount.kt                  # お気に入り登録数表示コンポーネント
+    │
+    ├── model/                                        # ドメインモデル
+    │   └── src/main/java/com/shg25/limimeshi/core/model/
+    │       ├── Chain.kt                              # 002で作成済み
+    │       ├── Campaign.kt                           # 002で作成済み
+    │       └── Favorite.kt                           # お気に入りデータクラス
+    │
+    ├── domain/                                       # ドメイン層（UseCase）
+    │   └── src/main/java/com/shg25/limimeshi/core/domain/
+    │       └── ToggleFavoriteUseCase.kt              # お気に入り登録・解除UseCase
+    │
+    ├── data/                                         # データ層（Repository）
+    │   └── src/main/java/com/shg25/limimeshi/core/data/
+    │       └── repository/
+    │           ├── ChainRepository.kt                # 002で作成済み
+    │           └── FavoritesRepository.kt            # お気に入りリポジトリ
+    │
+    ├── network/                                      # ネットワーク層（Firebase）
+    │   └── src/main/java/com/shg25/limimeshi/core/network/
+    │       └── FirestoreDataSource.kt                # Firestore DataSource（002で作成済み）
+    │
+    └── database/                                     # ローカルデータベース（Room）
+        └── src/main/java/com/shg25/limimeshi/core/database/
+            ├── dao/
+            │   └── FavoriteDao.kt                    # お気に入りDAO
+            └── entity/
+                └── FavoriteEntity.kt                 # お気に入りEntity
 ```
 
-**Structure Decision**: マルチモジュール構成（ADR-001参照、002-chain-listと統一）
-- **core/designsystem/component/**: FavoriteButton、FavoriteCount（共通コンポーネント）
+**Structure Decision**: 公式ドキュメント「Guide to Android app modularization」準拠（ADR-002参照）
+- **core/ui/component/**: FavoriteButton、FavoriteCount（共通コンポーネント）
 - **core/model/**: Favorite（ドメインモデル）
 - **core/domain/**: ToggleFavoriteUseCase
 - **core/data/repository/**: FavoritesRepository
+- **core/network/**: FirestoreDataSource（Firebase呼び出し）
+- **core/database/**: FavoriteDao、FavoriteEntity（Room）
 - **feature/chainlist/**: お気に入りボタンの統合（002と共有）
 
 ## Implementation Phases

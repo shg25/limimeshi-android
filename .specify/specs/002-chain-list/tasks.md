@@ -13,15 +13,17 @@
 
 ## Path Conventions
 
-マルチモジュール構成（ADR-001参照）:
+公式ドキュメント「Guide to Android app modularization」準拠（ADR-002参照）:
 
-- **app/**: `app/src/main/java/com/shg25/limimeshi/` - アプリエントリポイント、ナビゲーション
-- **core/designsystem/**: `core/designsystem/src/main/java/com/shg25/limimeshi/core/designsystem/` - 共通UI
-- **core/model/**: `core/model/src/main/java/com/shg25/limimeshi/core/model/` - ドメインモデル
-- **core/domain/**: `core/domain/src/main/java/com/shg25/limimeshi/core/domain/` - UseCase
-- **core/data/**: `core/data/src/main/java/com/shg25/limimeshi/core/data/` - Repository、DataSource
-- **core/common/**: `core/common/src/main/java/com/shg25/limimeshi/core/common/` - ユーティリティ
+- **app/**: `app/src/main/java/com/shg25/limimeshi/` - アプリケーションモジュール
 - **feature/chainlist/**: `feature/chainlist/src/main/java/com/shg25/limimeshi/feature/chainlist/` - チェーン店一覧機能
+- **core/ui/**: `core/ui/src/main/java/com/shg25/limimeshi/core/ui/` - 共通UIコンポーネント
+- **core/model/**: `core/model/src/main/java/com/shg25/limimeshi/core/model/` - ドメインモデル
+- **core/domain/**: `core/domain/src/main/java/com/shg25/limimeshi/core/domain/` - ドメイン層（UseCase）
+- **core/data/**: `core/data/src/main/java/com/shg25/limimeshi/core/data/` - データ層（Repository）
+- **core/network/**: `core/network/src/main/java/com/shg25/limimeshi/core/network/` - ネットワーク層（Firebase）
+- **core/database/**: `core/database/src/main/java/com/shg25/limimeshi/core/database/` - ローカルデータベース（Room）
+- **core/common/**: `core/common/src/main/java/com/shg25/limimeshi/core/common/` - 共通ユーティリティ
 - **テスト**: 各モジュールの `src/test/`, `src/androidTest/`
 
 パスはplan.mdのProject Structureセクションに基づく
@@ -30,23 +32,27 @@
 
 ## Phase 1: Setup（共有インフラストラクチャ）
 
-**Purpose**: プロジェクトの初期化とマルチモジュール構造の構築
+**Purpose**: プロジェクトの初期化とマルチモジュール構造の構築（公式ドキュメント準拠）
 
 - [ ] T001 limimeshi-androidリポジトリを作成（GitHub、ローカルにクローン）
 - [ ] T002 [P] Android Studio でKotlin + Jetpack Composeプロジェクトを初期化（Empty Activity with Compose）
 - [ ] T003 [P] 必要なパッケージをインストール（Firebase SDK、Hilt、Room、DataStore、JUnit 5、MockK、Turbine、Compose Testing）
-- [ ] T004 [P] マルチモジュール構造を作成:
-  - `app/` - アプリエントリポイント
-  - `core/designsystem/` - 共通UI（Theme、Components）
-  - `core/model/` - ドメインモデル
-  - `core/domain/` - UseCase
-  - `core/data/` - Repository、DataSource
-  - `core/common/` - ユーティリティ
+- [ ] T004 [P] マルチモジュール構造を作成（公式ドキュメント「Guide to Android app modularization」準拠）:
+  - `app/` - アプリケーションモジュール
   - `feature/chainlist/` - チェーン店一覧機能
+  - `core/ui/` - 共通UIコンポーネント
+  - `core/model/` - ドメインモデル
+  - `core/domain/` - ドメイン層（UseCase）
+  - `core/data/` - データ層（Repository）
+  - `core/network/` - ネットワーク層（Firebase）
+  - `core/database/` - ローカルデータベース（Room）
+  - `core/common/` - 共通ユーティリティ
 - [ ] T005 [P] Firebase設定ファイルを配置 app/google-services.json（Firebase Consoleからダウンロード）
 - [ ] T006 [P] Hilt DIセットアップ app/.../di/AppModule.kt、app/.../LimimeshiApp.kt（@HiltAndroidApp）
-- [ ] T006a [P] Room Database セットアップ core/data/.../datasource/local/LimimeshiDatabase.kt
+- [ ] T006a [P] Room Database セットアップ core/database/.../LimimeshiDatabase.kt
 - [ ] T006b [P] Navigation Compose セットアップ app/.../navigation/LimimeshiNavHost.kt
+- [ ] T006c [P] NetworkModule DIセットアップ core/network/.../di/NetworkModule.kt
+- [ ] T006d [P] DatabaseModule DIセットアップ core/database/.../di/DatabaseModule.kt
 
 ---
 
@@ -59,8 +65,8 @@
 - [ ] T007 Firestore Security Rulesを確認（/campaigns, /chainsが公開読み取り可能、書き込み不可）
 - [ ] T008 Firestoreインデックスを作成（chains: furigana asc、campaigns: chainId + saleStartTime desc）
 - [ ] T009 Kotlinデータクラス定義を作成 core/model/.../Chain.kt、Campaign.kt、CampaignStatus.kt、ChainSortOrder.kt（Enum: NEWEST/FURIGANA）、ChainWithCampaigns.kt
-- [ ] T009a Room Entity定義を作成 core/data/.../datasource/local/entity/ChainEntity.kt、CampaignEntity.kt（Firestoreモデルからローカルキャッシュ用に変換）
-- [ ] T009b Room DAO定義を作成 core/data/.../datasource/local/ChainDao.kt、CampaignDao.kt
+- [ ] T009a Room Entity定義を作成 core/database/.../entity/ChainEntity.kt、CampaignEntity.kt（Firestoreモデルからローカルキャッシュ用に変換）
+- [ ] T009b Room DAO定義を作成 core/database/.../dao/ChainDao.kt、CampaignDao.kt
 - [ ] T010 ステータス判定UseCaseを作成 core/domain/.../GetCampaignStatusUseCase.kt（saleStartTime, saleEndTimeからステータスを判定）
 
 **Checkpoint**: 基盤が整い、ユーザーストーリーの並列実装が可能になります
@@ -84,15 +90,16 @@
 
 - [ ] T013 [P] [US1] ステータス判定UseCaseを実装 core/domain/.../GetCampaignStatusUseCase.kt（現在時刻とsaleStartTime/saleEndTimeを比較）
 - [ ] T014 [US1] ChainRepositoryを作成 core/data/.../repository/ChainRepository.kt（Firestoreからチェーン店一覧を取得、Roomにキャッシュ、1年以内・販売開始日時降順で取得）
-- [ ] T014a [US1] FirestoreDataSourceを作成 core/data/.../datasource/remote/FirestoreDataSource.kt（Firestore読み取り処理をカプセル化）
+- [ ] T014a [US1] FirestoreDataSourceを作成 core/network/.../FirestoreDataSource.kt（Firestore読み取り処理をカプセル化）
 - [ ] T014b [US1] GetChainListUseCaseを作成 core/domain/.../GetChainListUseCase.kt（Repository呼び出し、ソートロジック）
 - [ ] T015 [US1] ChainListViewModelを作成 feature/chainlist/.../ChainListViewModel.kt（UIステート管理、UseCase呼び出し、ソート順管理、エラーハンドリング）
+- [ ] T015a [US1] ChainListUiStateを作成 feature/chainlist/.../ChainListUiState.kt（UI State定義）
 - [ ] T016 [US1] チェーン店一覧画面を作成 feature/chainlist/.../ChainListScreen.kt（LazyColumn、ソート選択UI、ローディング状態、エラー状態、空リスト状態）
-- [ ] T016a [US1] ソート順選択コンポーネントを作成 core/designsystem/.../component/SortSelector.kt（Material 3 DropdownMenu、新着順/ふりがな順切り替え）
+- [ ] T016a [US1] ソート順選択コンポーネントを作成 core/ui/.../component/SortSelector.kt（Material 3 DropdownMenu、新着順/ふりがな順切り替え）
 - [ ] T016b [US1] チェーン店のソートロジックを実装 core/domain/.../GetChainListUseCase.kt（新着順: 最新キャンペーンのsaleStartTime降順、ふりがな順: furigana昇順）
 - [ ] T017 [US1] チェーン店カードコンポーネントを作成 feature/chainlist/.../ChainCard.kt（チェーン名、お気に入り登録数、紐づくキャンペーン一覧を表示）
 - [ ] T018 [US1] キャンペーン項目コンポーネントを作成 feature/chainlist/.../CampaignItem.kt（キャンペーン名、販売開始日時、販売終了日時（未設定時は非表示）、ステータス、説明を表示）
-- [ ] T019 [US1] X Post埋め込みコンポーネントを作成 core/designsystem/.../component/XPostEmbed.kt（WebViewでTwitter Widgets使用、Post ID抽出、エラーハンドリング）
+- [ ] T019 [US1] X Post埋め込みコンポーネントを作成 core/ui/.../component/XPostEmbed.kt（WebViewでTwitter Widgets使用、Post ID抽出、エラーハンドリング）
 - [ ] T020 [US1] キャンペーン項目にX Post埋め込みを統合 feature/chainlist/.../CampaignItem.kt（X Post URLがあれば表示、なければ非表示）
 - [ ] T021 [US1] 1年経過フィルタを実装 core/data/.../repository/ChainRepository.kt（Firestoreクエリで`whereGreaterThanOrEqualTo("saleStartTime", oneYearAgo)`）
 - [ ] T022 [US1] 空リスト時の表示を実装 feature/chainlist/.../ChainListScreen.kt（チェーン店0件時に「データなし」、キャンペーン0件時に「現在キャンペーンはありません」と表示）
@@ -117,7 +124,7 @@
 ### Implementation for User Story 2
 
 - [ ] T025 [P] [US2] PreferencesRepositoryを作成 core/data/.../repository/PreferencesRepository.kt（DataStore Preferences、showFavoritesOnly + sortOrder保存・読み込み）
-- [ ] T026 [US2] お気に入りフィルタコンポーネントを作成 core/designsystem/.../component/FavoritesFilter.kt（Material 3 Switch、フィルタON/OFF切り替え）
+- [ ] T026 [US2] お気に入りフィルタコンポーネントを作成 core/ui/.../component/FavoritesFilter.kt（Material 3 Switch、フィルタON/OFF切り替え）
 - [ ] T027 [US2] ChainListViewModelに認証状態を追加 feature/chainlist/.../ChainListViewModel.kt（Firebase Auth AuthStateListener、ログインユーザーのみフィルタ表示）
 - [ ] T028 [US2] お気に入りチェーンデータを取得 core/data/.../repository/FavoritesRepository.kt（Firestoreから/users/{userId}/favoritesを取得、chainIdリストを作成）
 - [ ] T029 [US2] お気に入りフィルタロジックを実装 core/data/.../repository/ChainRepository.kt（フィルタON時は`whereIn("__name__", favoriteChainIds)`でクエリ、10件制限の考慮）
@@ -137,7 +144,7 @@
 - [ ] T034 [P] パフォーマンス検証（3秒以内の初期表示、モバイル4G環境、X Post埋め込み部分を除く）
 - [ ] T035 [P] エラーハンドリングの網羅性確認（Firestoreエラー、X Post埋め込みエラー、ネットワークエラー）
 - [ ] T036 [P] アクセシビリティ改善（contentDescription追加、TalkBack対応、コントラスト比確認）
-- [ ] T037 [P] Material 3テーマ設定確認 core/designsystem/.../theme/Theme.kt（ダイナミックカラー、ダークモード対応）
+- [ ] T037 [P] Material 3テーマ設定確認 core/ui/.../theme/Theme.kt（ダイナミックカラー、ダークモード対応）
 - [ ] T038 [P] テストカバレッジの確認（70%以上のターゲット達成確認）
 - [ ] T039 [P] ProGuard/R8設定確認（リリースビルドで動作確認）
 - [ ] T040 Google Play Console設定を確認（内部テストトラック、アプリ署名）
@@ -164,10 +171,10 @@
 
 ## 成果物の確認
 
-### 総タスク数: 48タスク（マルチモジュール対応により増加）
+### 総タスク数: 52タスク（公式ドキュメント準拠マルチモジュール対応）
 
 ### ユーザーストーリーごとのタスク数:
-- **User Story 1（チェーン店一覧の閲覧）**: 16タスク（テスト2 + 実装14）- ソート機能含む、UseCase/DataSource追加
+- **User Story 1（チェーン店一覧の閲覧）**: 17タスク（テスト2 + 実装15）- ソート機能含む、UseCase/DataSource/UiState追加
 - **User Story 2（お気に入りチェーン店フィルタ）**: 9タスク（テスト2 + 実装7）
 
 ### 各ストーリーの独立テスト基準:

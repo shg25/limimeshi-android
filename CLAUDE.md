@@ -90,6 +90,8 @@ GitHub Spec Kit（仕様駆動開発）：
 
 ## ディレクトリ構造
 
+公式ドキュメント「Guide to Android app modularization」準拠（ADR-002参照）
+
 ```
 limimeshi-android/
 ├── .specify/specs/              # GitHub Spec Kit仕様書
@@ -103,23 +105,47 @@ limimeshi-android/
 │   │   └── checklists/          # チェックリスト
 │   └── 003-favorites/           # お気に入り登録機能
 │       └── ...
-├── app/
-│   ├── src/main/java/com/shg25/limimeshi/
-│   │   ├── ui/                  # Composable関数、画面
-│   │   │   ├── chain/           # チェーン店一覧画面
-│   │   │   ├── components/      # 共通コンポーネント
-│   │   │   └── theme/           # Material 3テーマ
-│   │   ├── data/                # データ層
-│   │   │   ├── repository/      # リポジトリ
-│   │   │   └── model/           # データモデル
-│   │   ├── util/                # ユーティリティ
-│   │   └── di/                  # Hilt DI設定
-│   ├── src/test/                # 単体テスト
-│   └── src/androidTest/         # UIテスト
+│
+├── app/                         # アプリケーションモジュール
+│   └── src/main/java/com/shg25/limimeshi/
+│       ├── LimimeshiApp.kt      # @HiltAndroidApp
+│       ├── MainActivity.kt
+│       ├── di/                  # アプリレベルDI
+│       └── navigation/          # Navigation Compose
+│
+├── feature/                     # 機能モジュール群
+│   ├── chainlist/               # チェーン店一覧機能（002）
+│   │   └── src/main/java/com/shg25/limimeshi/feature/chainlist/
+│   │       ├── ChainListScreen.kt
+│   │       ├── ChainListViewModel.kt
+│   │       └── ...
+│   └── favorites/               # お気に入り機能（003）
+│       └── src/main/java/com/shg25/limimeshi/feature/favorites/
+│
+├── core/                        # コアモジュール群
+│   ├── ui/                      # 共通UIコンポーネント
+│   │   └── src/main/java/com/shg25/limimeshi/core/ui/
+│   │       ├── theme/           # Material 3テーマ
+│   │       └── component/       # 共通Composable
+│   ├── model/                   # ドメインモデル
+│   │   └── src/main/java/com/shg25/limimeshi/core/model/
+│   ├── domain/                  # ドメイン層（UseCase）
+│   │   └── src/main/java/com/shg25/limimeshi/core/domain/
+│   ├── data/                    # データ層（Repository）
+│   │   └── src/main/java/com/shg25/limimeshi/core/data/
+│   ├── network/                 # ネットワーク層（Firebase）
+│   │   └── src/main/java/com/shg25/limimeshi/core/network/
+│   ├── database/                # ローカルDB（Room）
+│   │   └── src/main/java/com/shg25/limimeshi/core/database/
+│   └── common/                  # 共通ユーティリティ
+│       └── src/main/java/com/shg25/limimeshi/core/common/
+│
 ├── build.gradle.kts
-├── app/build.gradle.kts
+├── settings.gradle.kts          # モジュール定義
 └── google-services.json         # Firebase設定（.gitignore）
 ```
+
+詳細は `docs/adr/002-multimodule-architecture.md` を参照
 
 ## 重要なドキュメント
 
