@@ -22,6 +22,9 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 add("implementation", libs.findLibrary("navigation-compose").get())
                 add("implementation", libs.findLibrary("hilt-navigation-compose").get())
 
+                // Logging
+                add("implementation", libs.findLibrary("timber").get())
+
                 // Testing
                 add("testImplementation", libs.findLibrary("mockk").get())
                 add("testImplementation", libs.findLibrary("turbine").get())
