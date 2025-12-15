@@ -39,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.shg25.limimeshi.core.domain.GetCampaignStatusUseCase
+import com.shg25.limimeshi.core.ui.component.XPostEmbed
 import com.shg25.limimeshi.core.model.Campaign
 import com.shg25.limimeshi.core.model.CampaignStatus
 import com.shg25.limimeshi.core.model.ChainSortOrder
@@ -313,7 +314,14 @@ private fun CampaignItem(
                 )
             }
 
-            // TODO: X Post埋め込み（T019で実装）
+            // X Post埋め込み
+            if (!campaign.xPostUrl.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(12.dp))
+                XPostEmbed(
+                    xPostUrl = campaign.xPostUrl,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }
