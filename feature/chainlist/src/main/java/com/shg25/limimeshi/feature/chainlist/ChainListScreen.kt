@@ -19,7 +19,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -36,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,6 +46,9 @@ import com.shg25.limimeshi.core.model.ChainWithCampaigns
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+/**
+ * チェーン店一覧画面（ViewModelを使用）
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChainListScreen(
@@ -64,6 +65,27 @@ fun ChainListScreen(
         }
     }
 
+    ChainListContent(
+        uiState = uiState,
+        getCampaignStatusUseCase = getCampaignStatusUseCase,
+        onSortOrderChange = viewModel::changeSortOrder,
+        onRefresh = viewModel::refresh,
+        snackbarHostState = snackbarHostState
+    )
+}
+
+/**
+ * チェーン店一覧画面のコンテンツ（テスト可能）
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun ChainListContent(
+    uiState: ChainListUiState,
+    getCampaignStatusUseCase: GetCampaignStatusUseCase,
+    onSortOrderChange: (ChainSortOrder) -> Unit,
+    onRefresh: () -> Unit,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -71,7 +93,7 @@ fun ChainListScreen(
                 actions = {
                     SortSelector(
                         currentSortOrder = uiState.sortOrder,
-                        onSortOrderChange = viewModel::changeSortOrder
+                        onSortOrderChange = onSortOrderChange
                     )
                 }
             )
@@ -80,7 +102,7 @@ fun ChainListScreen(
     ) { innerPadding ->
         PullToRefreshBox(
             isRefreshing = uiState.isRefreshing,
-            onRefresh = viewModel::refresh,
+            onRefresh = onRefresh,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -118,7 +140,7 @@ fun ChainListScreen(
 }
 
 @Composable
-private fun SortSelector(
+internal fun SortSelector(
     currentSortOrder: ChainSortOrder,
     onSortOrderChange: (ChainSortOrder) -> Unit
 ) {

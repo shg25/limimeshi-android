@@ -25,10 +25,15 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 // Logging
                 add("implementation", libs.findLibrary("timber").get())
 
-                // Testing
+                // Unit Testing
                 add("testImplementation", libs.findLibrary("mockk").get())
                 add("testImplementation", libs.findLibrary("turbine").get())
                 add("testImplementation", libs.findLibrary("kotlinx-coroutines-test").get())
+
+                // UI Testing (androidTest)
+                add("androidTestImplementation", libs.findLibrary("androidx-compose-ui-test-junit4").get())
+                add("debugImplementation", libs.findLibrary("androidx-compose-ui-test-manifest").get())
+                add("androidTestImplementation", libs.findLibrary("androidx-junit").get())
             }
         }
     }
