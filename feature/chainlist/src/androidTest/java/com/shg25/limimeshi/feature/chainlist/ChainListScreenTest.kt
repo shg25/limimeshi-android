@@ -48,7 +48,8 @@ class ChainListScreenTest {
                 uiState = uiState,
                 getCampaignStatusUseCase = getCampaignStatusUseCase,
                 onSortOrderChange = {},
-                onRefresh = {}
+                onRefresh = {},
+                onToggleFavorite = {}
             )
         }
 
@@ -72,7 +73,8 @@ class ChainListScreenTest {
                 uiState = uiState,
                 getCampaignStatusUseCase = getCampaignStatusUseCase,
                 onSortOrderChange = {},
-                onRefresh = {}
+                onRefresh = {},
+                onToggleFavorite = {}
             )
         }
 
@@ -92,7 +94,8 @@ class ChainListScreenTest {
                 uiState = uiState,
                 getCampaignStatusUseCase = getCampaignStatusUseCase,
                 onSortOrderChange = {},
-                onRefresh = {}
+                onRefresh = {},
+                onToggleFavorite = {}
             )
         }
 
@@ -112,7 +115,8 @@ class ChainListScreenTest {
                 uiState = uiState,
                 getCampaignStatusUseCase = getCampaignStatusUseCase,
                 onSortOrderChange = {},
-                onRefresh = {}
+                onRefresh = {},
+                onToggleFavorite = {}
             )
         }
 
@@ -140,7 +144,8 @@ class ChainListScreenTest {
                 uiState = uiState,
                 getCampaignStatusUseCase = getCampaignStatusUseCase,
                 onSortOrderChange = {},
-                onRefresh = {}
+                onRefresh = {},
+                onToggleFavorite = {}
             )
         }
 
@@ -160,7 +165,8 @@ class ChainListScreenTest {
                 uiState = uiState,
                 getCampaignStatusUseCase = getCampaignStatusUseCase,
                 onSortOrderChange = {},
-                onRefresh = {}
+                onRefresh = {},
+                onToggleFavorite = {}
             )
         }
 
@@ -180,7 +186,8 @@ class ChainListScreenTest {
                 uiState = uiState,
                 getCampaignStatusUseCase = getCampaignStatusUseCase,
                 onSortOrderChange = {},
-                onRefresh = {}
+                onRefresh = {},
+                onToggleFavorite = {}
             )
         }
 
@@ -212,7 +219,8 @@ class ChainListScreenTest {
                 uiState = uiState,
                 getCampaignStatusUseCase = getCampaignStatusUseCase,
                 onSortOrderChange = {},
-                onRefresh = {}
+                onRefresh = {},
+                onToggleFavorite = {}
             )
         }
 

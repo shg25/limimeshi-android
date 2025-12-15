@@ -35,9 +35,9 @@
 
 **Purpose**: プロジェクトの初期化と基本構造の構築（002-chain-listで大部分が完了済み）
 
-- [ ] T001 limimeshi-androidリポジトリのマルチモジュール構造を確認（公式ドキュメント準拠、ADR-002参照）
-- [ ] T001a feature/favorites/モジュールを作成（002で作成されていない場合）
-- [ ] T002 [P] Material Icons依存関係がcore/uiに追加されていることを確認（androidx.compose.material:material-icons-extended）、未追加の場合は追加
+- [x] T001 limimeshi-androidリポジトリのマルチモジュール構造を確認（公式ドキュメント準拠、ADR-002参照）
+- [x] T001a feature/favorites/モジュールを作成（002で作成されていない場合）→ US1ではfeature/chainlistを拡張、feature/favoritesは今後のUS2で使用予定
+- [x] T002 [P] Material Icons依存関係がcore/uiに追加されていることを確認（androidx.compose.material:material-icons-extended）、未追加の場合は追加
 
 ---
 
@@ -47,17 +47,17 @@
 
 **⚠️ CRITICAL**: このフェーズが完了するまで、ユーザーストーリーの作業を開始できません
 
-- [ ] T003 Firestore Security Rulesを更新（/users/{userId}/favorites/{chainId}の読み書きルール、/chains/{chainId}のfavoriteCount更新ルール）
-- [ ] T004 Kotlinデータクラス定義を作成 core/model/.../Favorite.kt（Favorite型、FavoriteState型）
-- [ ] T004a Room Entity定義を作成 core/database/.../entity/FavoriteEntity.kt
-- [ ] T004b Room DAO定義を作成 core/database/.../dao/FavoriteDao.kt
-- [ ] T005 Chain.ktにfavoriteCountフィールドを追加 core/model/.../Chain.kt（Int型、デフォルト0）
+- [x] T003 Firestore Security Rulesを更新（/users/{userId}/favorites/{chainId}の読み書きルール、/chains/{chainId}のfavoriteCount更新ルール）→ limimeshi-infraに既存
+- [x] T004 Kotlinデータクラス定義を作成 core/model/.../Favorite.kt（Favorite型、FavoriteState型）
+- [x] T004a Room Entity定義を作成 core/database/.../entity/FavoriteEntity.kt
+- [x] T004b Room DAO定義を作成 core/database/.../dao/FavoriteDao.kt
+- [x] T005 Chain.ktにfavoriteCountフィールドを追加 core/model/.../Chain.kt（Int型、デフォルト0）→ 002-chain-listで対応済み
 
-**Checkpoint**: 基盤が整い、ユーザーストーリーの並列実装が可能になります
+**Checkpoint**: 基盤が整い、ユーザーストーリーの並列実装が可能になります ✅ 完了
 
 ---
 
-## Phase 3: User Story 1 - チェーン店のお気に入り登録・解除 (Priority: P1) 🎯 MVP
+## Phase 3: User Story 1 - チェーン店のお気に入り登録・解除 (Priority: P1) 🎯 MVP ✅ 完了
 
 **Goal**: ログインユーザーがチェーン店をお気に入り登録・解除でき、お気に入り状態が即座にUIに反映される。お気に入り登録したチェーンは002のチェーン店一覧フィルタで使用される。
 
@@ -67,21 +67,26 @@
 
 > **NOTE: これらのテストを最初に書き、実装前に失敗することを確認**
 
-- [ ] T006 [P] [US1] お気に入りボタンコンポーネントの単体テストを作成 core/ui/src/test/.../component/FavoriteButtonTest.kt（ログインユーザーのボタン有効化、未ログインユーザーのボタン無効化、登録・解除状態の表示切り替え、ローディング状態）
-- [ ] T007 [P] [US1] お気に入りリポジトリの単体テストを作成 core/data/src/test/.../repository/FavoritesRepositoryTest.kt（登録・解除処理、Firestore Transaction確認）
+- [ ] T006 [P] [US1] お気に入りボタンコンポーネントの単体テストを作成 core/ui/src/test/.../component/FavoriteButtonTest.kt（ログインユーザーのボタン有効化、未ログインユーザーのボタン無効化、登録・解除状態の表示切り替え、ローディング状態）→ 後続タスクとして実施予定
+- [ ] T007 [P] [US1] お気に入りリポジトリの単体テストを作成 core/data/src/test/.../repository/FavoritesRepositoryTest.kt（登録・解除処理、Firestore Transaction確認）→ 後続タスクとして実施予定
 
 ### Implementation for User Story 1
 
-- [ ] T008 [P] [US1] お気に入りボタンコンポーネントを作成 core/ui/.../component/FavoriteButton.kt（Material 3 IconButton + Favorite/FavoriteBorderアイコン、ローディング状態、無効化状態）
-- [ ] T009 [US1] FavoritesRepositoryを作成 core/data/.../repository/FavoritesRepository.kt（Firestoreからお気に入り状態を取得、Roomにキャッシュ、登録・解除処理、Transactionでカウント更新）
-- [ ] T009a [US1] ToggleFavoriteUseCaseを作成 core/domain/.../ToggleFavoriteUseCase.kt（Repository呼び出し、お気に入り登録・解除ロジック）
-- [ ] T010 [US1] ChainListViewModelに認証状態を追加 feature/chainlist/.../ChainListViewModel.kt（Firebase Auth AuthStateListener、ログインユーザーのみお気に入りボタン有効化）
-- [ ] T011 [US1] ChainListViewModelにお気に入り状態を追加 feature/chainlist/.../ChainListViewModel.kt（お気に入りチェーンIDリストを管理、UseCase呼び出し）
-- [ ] T012 [US1] ChainCardへのお気に入りボタン統合 feature/chainlist/.../ChainCard.kt（FavoriteButtonコンポーネントを追加、chainIdごとのお気に入り状態を表示）
-- [ ] T013 [US1] エラーハンドリングの追加 feature/chainlist/.../ChainListScreen.kt（Snackbar + SnackbarHostState でエラーメッセージ表示、permission-denied/unavailableエラーの処理）
-- [ ] T014 [US1] ローディング状態の管理 feature/chainlist/.../ChainListViewModel.kt（chainIdごとのローディング状態をMapで管理）
+- [x] T008 [P] [US1] お気に入りボタンコンポーネントを作成 core/ui/.../component/FavoriteButton.kt（Material 3 IconButton + Favorite/FavoriteBorderアイコン、ローディング状態、無効化状態）
+- [x] T009 [US1] FavoritesRepositoryを作成 core/data/.../repository/FavoritesRepository.kt（Firestoreからお気に入り状態を取得、Roomにキャッシュ、登録・解除処理、Transactionでカウント更新）
+- [x] T009a [US1] ToggleFavoriteUseCaseを作成 core/domain/.../ToggleFavoriteUseCase.kt（Repository呼び出し、お気に入り登録・解除ロジック）
+- [x] T010 [US1] ChainListViewModelに認証状態を追加 feature/chainlist/.../ChainListViewModel.kt（Firebase Auth AuthStateListener、ログインユーザーのみお気に入りボタン有効化）
+- [x] T011 [US1] ChainListViewModelにお気に入り状態を追加 feature/chainlist/.../ChainListViewModel.kt（お気に入りチェーンIDリストを管理、UseCase呼び出し）
+- [x] T012 [US1] ChainCardへのお気に入りボタン統合 feature/chainlist/.../ChainCard.kt（FavoriteButtonコンポーネントを追加、chainIdごとのお気に入り状態を表示）
+- [x] T013 [US1] エラーハンドリングの追加 feature/chainlist/.../ChainListScreen.kt（Snackbar + SnackbarHostState でエラーメッセージ表示、permission-denied/unavailableエラーの処理）
+- [x] T014 [US1] ローディング状態の管理 feature/chainlist/.../ChainListViewModel.kt（chainIdごとのローディング状態をMapで管理）
 
-**Checkpoint**: この時点で、User Story 1は完全に機能し、独立してテスト可能です（お気に入り登録・解除機能が動作）
+### 追加実装（Spec外）
+
+- [x] T014a [US1] Googleログイン機能を実装 app/.../ui/login/LoginScreen.kt, LoginViewModel.kt（Credential Manager API、Firebase Authentication連携）
+- [x] T014b [US1] ログイン画面へのナビゲーションを追加 app/.../navigation/LimimeshiNavHost.kt
+
+**Checkpoint**: この時点で、User Story 1は完全に機能し、独立してテスト可能です（お気に入り登録・解除機能が動作） ✅ 完了
 
 ---
 

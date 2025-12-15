@@ -13,6 +13,9 @@ dependencies {
     implementation(project(":core:database"))
     implementation(project(":core:common"))
 
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+
     implementation(libs.kotlinx.coroutines.test)
 
     testImplementation(libs.mockk)
