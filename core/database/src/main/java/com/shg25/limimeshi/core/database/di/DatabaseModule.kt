@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.shg25.limimeshi.core.database.LimimeshiDatabase
 import com.shg25.limimeshi.core.database.dao.CampaignDao
 import com.shg25.limimeshi.core.database.dao.ChainDao
+import com.shg25.limimeshi.core.database.dao.FavoriteDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,11 +25,14 @@ object DatabaseModule {
         context,
         LimimeshiDatabase::class.java,
         "limimeshi.db"
-    ).build()
+    ).fallbackToDestructiveMigration().build()
 
     @Provides
     fun provideChainDao(database: LimimeshiDatabase): ChainDao = database.chainDao()
 
     @Provides
     fun provideCampaignDao(database: LimimeshiDatabase): CampaignDao = database.campaignDao()
+
+    @Provides
+    fun provideFavoriteDao(database: LimimeshiDatabase): FavoriteDao = database.favoriteDao()
 }

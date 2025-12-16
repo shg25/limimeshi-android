@@ -2,8 +2,10 @@ package com.shg25.limimeshi.feature.chainlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shg25.limimeshi.core.data.repository.FavoritesRepository
 import com.shg25.limimeshi.core.domain.GetChainListUseCase
 import com.shg25.limimeshi.core.domain.SyncChainDataUseCase
+import com.shg25.limimeshi.core.domain.ToggleFavoriteUseCase
 import com.shg25.limimeshi.core.model.ChainSortOrder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +23,9 @@ import javax.inject.Inject
 @HiltViewModel
 class ChainListViewModel @Inject constructor(
     private val getChainListUseCase: GetChainListUseCase,
-    private val syncChainDataUseCase: SyncChainDataUseCase
+    private val syncChainDataUseCase: SyncChainDataUseCase,
+    private val favoritesRepository: FavoritesRepository,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ChainListUiState())
@@ -29,6 +33,8 @@ class ChainListViewModel @Inject constructor(
 
     init {
         loadChainList()
+        observeLoginState()
+        observeFavorites()
     }
 
     /**
@@ -128,5 +134,70 @@ class ChainListViewModel @Inject constructor(
      */
     fun clearError() {
         _uiState.update { it.copy(errorMessage = null) }
+    }
+
+    /**
+     * ログイン状態を監視
+     */
+    private fun observeLoginState() {
+        viewModelScope.launch {
+            favoritesRepository.isLoggedIn.collect { isLoggedIn ->
+                _uiState.update { it.copy(isLoggedIn = isLoggedIn) }
+
+                // ログイン時にお気に入りを同期
+                if (isLoggedIn) {
+                    try {
+                        favoritesRepository.syncFromFirestore()
+                    } catch (e: Exception) {
+                        Timber.e(e, "Failed to sync favorites")
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * お気に入り状態を監視
+     */
+    private fun observeFavorites() {
+        viewModelScope.launch {
+            favoritesRepository.favoriteChainIds.collect { favoriteIds ->
+                _uiState.update { it.copy(favoriteChainIds = favoriteIds) }
+            }
+        }
+    }
+
+    /**
+     * お気に入りをトグル
+     */
+    fun toggleFavorite(chainId: String) {
+        val currentState = _uiState.value
+        if (!currentState.isLoggedIn) return
+        if (currentState.isLoadingFavorite(chainId)) return
+
+        val isFavorite = currentState.isFavorite(chainId)
+
+        viewModelScope.launch {
+            // ローディング状態を設定
+            _uiState.update {
+                it.copy(loadingFavoriteChainIds = it.loadingFavoriteChainIds + chainId)
+            }
+
+            toggleFavoriteUseCase(chainId, isFavorite)
+                .onSuccess {
+                    Timber.d("Favorite toggled successfully: $chainId")
+                }
+                .onFailure { e ->
+                    Timber.e(e, "Failed to toggle favorite: $chainId")
+                    _uiState.update {
+                        it.copy(errorMessage = "お気に入りの変更に失敗しました")
+                    }
+                }
+
+            // ローディング状態を解除
+            _uiState.update {
+                it.copy(loadingFavoriteChainIds = it.loadingFavoriteChainIds - chainId)
+            }
+        }
     }
 }
