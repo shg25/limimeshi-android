@@ -37,8 +37,6 @@ fun LoginScreen(
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
-
-    // Web Client ID from strings.xml
     val webClientId = context.getString(R.string.default_web_client_id)
 
     LaunchedEffect(uiState.errorMessage) {
@@ -51,87 +49,123 @@ fun LoginScreen(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "リミメシ",
-                style = MaterialTheme.typography.headlineLarge
+        LoginContent(
+            modifier = Modifier.padding(innerPadding),
+            uiState = uiState,
+            onGoogleSignIn = { viewModel.signInWithGoogle(context, webClientId) },
+            onSignOut = viewModel::signOut,
+            onNavigateToChainList = onNavigateToChainList
+        )
+    }
+}
+
+@Composable
+private fun LoginContent(
+    modifier: Modifier = Modifier,
+    uiState: LoginUiState,
+    onGoogleSignIn: () -> Unit,
+    onSignOut: () -> Unit,
+    onNavigateToChainList: () -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        LoginHeader()
+        Spacer(modifier = Modifier.height(48.dp))
+
+        if (uiState.isLoggedIn) {
+            LoggedInSection(
+                userName = uiState.userName,
+                onNavigateToChainList = onNavigateToChainList,
+                onSignOut = onSignOut
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "期間限定メニュー情報",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+        } else {
+            LoggedOutSection(
+                isLoading = uiState.isLoading,
+                onGoogleSignIn = onGoogleSignIn,
+                onNavigateToChainList = onNavigateToChainList
             )
-
-            Spacer(modifier = Modifier.height(48.dp))
-
-            if (uiState.isLoggedIn) {
-                Text(
-                    text = "ようこそ、${uiState.userName ?: "ユーザー"}さん",
-                    style = MaterialTheme.typography.titleMedium
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Button(
-                    onClick = onNavigateToChainList,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("チェーン店一覧へ")
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                OutlinedButton(
-                    onClick = { viewModel.signOut() },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("ログアウト")
-                }
-            } else {
-                Text(
-                    text = "お気に入り機能を使うには\nログインが必要です",
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Button(
-                    onClick = { viewModel.signInWithGoogle(context, webClientId) },
-                    enabled = !uiState.isLoading,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    if (uiState.isLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            strokeWidth = 2.dp,
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    } else {
-                        Text("Googleでログイン")
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                OutlinedButton(
-                    onClick = onNavigateToChainList,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("ログインせずに続ける")
-                }
-            }
         }
+    }
+}
+
+@Composable
+private fun LoginHeader() {
+    Text(
+        text = "リミメシ",
+        style = MaterialTheme.typography.headlineLarge
+    )
+    Spacer(modifier = Modifier.height(8.dp))
+    Text(
+        text = "期間限定メニュー情報",
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+    )
+}
+
+@Composable
+private fun LoggedInSection(
+    userName: String?,
+    onNavigateToChainList: () -> Unit,
+    onSignOut: () -> Unit
+) {
+    Text(
+        text = "ようこそ、${userName ?: "ユーザー"}さん",
+        style = MaterialTheme.typography.titleMedium
+    )
+    Spacer(modifier = Modifier.height(24.dp))
+    Button(
+        onClick = onNavigateToChainList,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text("チェーン店一覧へ")
+    }
+    Spacer(modifier = Modifier.height(12.dp))
+    OutlinedButton(
+        onClick = onSignOut,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text("ログアウト")
+    }
+}
+
+@Composable
+private fun LoggedOutSection(
+    isLoading: Boolean,
+    onGoogleSignIn: () -> Unit,
+    onNavigateToChainList: () -> Unit
+) {
+    Text(
+        text = "お気に入り機能を使うには\nログインが必要です",
+        style = MaterialTheme.typography.bodyMedium,
+        textAlign = TextAlign.Center,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+    )
+    Spacer(modifier = Modifier.height(24.dp))
+    Button(
+        onClick = onGoogleSignIn,
+        enabled = !isLoading,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(24.dp),
+                strokeWidth = 2.dp,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        } else {
+            Text("Googleでログイン")
+        }
+    }
+    Spacer(modifier = Modifier.height(12.dp))
+    OutlinedButton(
+        onClick = onNavigateToChainList,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text("ログインせずに続ける")
     }
 }

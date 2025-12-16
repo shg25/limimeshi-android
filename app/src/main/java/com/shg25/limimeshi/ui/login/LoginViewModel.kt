@@ -86,7 +86,7 @@ class LoginViewModel @Inject constructor(
                 Timber.d("Google Sign-In successful: ${authResult.user?.email}")
 
             } catch (e: GetCredentialCancellationException) {
-                Timber.d("Google Sign-In cancelled by user")
+                Timber.d(e, "Google Sign-In cancelled by user")
                 _uiState.update {
                     it.copy(isLoading = false)
                 }
