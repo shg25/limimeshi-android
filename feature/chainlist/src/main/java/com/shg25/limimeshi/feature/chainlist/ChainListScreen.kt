@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.shg25.limimeshi.core.domain.GetCampaignStatusUseCase
 import com.shg25.limimeshi.core.ui.component.FavoriteButton
+import com.shg25.limimeshi.core.ui.component.FavoriteCount
 import com.shg25.limimeshi.core.ui.component.XPostEmbed
 import com.shg25.limimeshi.core.model.Campaign
 import com.shg25.limimeshi.core.model.CampaignStatus
@@ -134,11 +135,8 @@ internal fun ChainListContent(
                 }
                 else -> {
                     ChainList(
-                        chains = uiState.chains,
+                        uiState = uiState,
                         getCampaignStatusUseCase = getCampaignStatusUseCase,
-                        isLoggedIn = uiState.isLoggedIn,
-                        favoriteChainIds = uiState.favoriteChainIds,
-                        loadingFavoriteChainIds = uiState.loadingFavoriteChainIds,
                         onToggleFavorite = onToggleFavorite
                     )
                 }
@@ -192,25 +190,23 @@ internal fun SortSelector(
 
 @Composable
 private fun ChainList(
-    chains: List<ChainWithCampaigns>,
+    uiState: ChainListUiState,
     getCampaignStatusUseCase: GetCampaignStatusUseCase,
-    isLoggedIn: Boolean,
-    favoriteChainIds: Set<String>,
-    loadingFavoriteChainIds: Set<String>,
     onToggleFavorite: (String) -> Unit
 ) {
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(chains, key = { it.chain.id }) { chainWithCampaigns ->
+        items(uiState.chains, key = { it.chain.id }) { chainWithCampaigns ->
             val chainId = chainWithCampaigns.chain.id
             ChainCard(
                 chainWithCampaigns = chainWithCampaigns,
                 getCampaignStatusUseCase = getCampaignStatusUseCase,
-                isLoggedIn = isLoggedIn,
-                isFavorite = favoriteChainIds.contains(chainId),
-                isLoadingFavorite = loadingFavoriteChainIds.contains(chainId),
+                isLoggedIn = uiState.isLoggedIn,
+                isFavorite = uiState.isFavorite(chainId),
+                isLoadingFavorite = uiState.isLoadingFavorite(chainId),
+                favoriteCount = uiState.getFavoriteCount(chainId, chainWithCampaigns.chain.favoriteCount),
                 onToggleFavorite = { onToggleFavorite(chainId) }
             )
         }
@@ -224,6 +220,7 @@ private fun ChainCard(
     isLoggedIn: Boolean,
     isFavorite: Boolean,
     isLoadingFavorite: Boolean,
+    favoriteCount: Int,
     onToggleFavorite: () -> Unit
 ) {
     Card(
@@ -251,12 +248,9 @@ private fun ChainCard(
                     enabled = isLoggedIn,
                     onClick = onToggleFavorite
                 )
-                Text(
-                    text = "♥ ${chainWithCampaigns.chain.favoriteCount}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
             }
+
+            FavoriteCount(count = favoriteCount)
 
             Spacer(modifier = Modifier.height(12.dp))
 

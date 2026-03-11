@@ -17,7 +17,9 @@ data class ChainListUiState(
     /** お気に入りチェーンIDセット */
     val favoriteChainIds: Set<String> = emptySet(),
     /** お気に入り操作中のチェーンIDセット */
-    val loadingFavoriteChainIds: Set<String> = emptySet()
+    val loadingFavoriteChainIds: Set<String> = emptySet(),
+    /** お気に入り登録数のOptimistic UIオーバーライド */
+    val favoriteCountOverrides: Map<String, Int> = emptyMap()
 ) {
     val isEmpty: Boolean
         get() = !isLoading && chains.isEmpty() && errorMessage == null
@@ -27,4 +29,8 @@ data class ChainListUiState(
 
     /** 指定チェーンのお気に入り操作中かどうか */
     fun isLoadingFavorite(chainId: String): Boolean = loadingFavoriteChainIds.contains(chainId)
+
+    /** 指定チェーンのお気に入り登録数を取得（Optimistic UIオーバーライド優先） */
+    fun getFavoriteCount(chainId: String, originalCount: Int): Int =
+        favoriteCountOverrides[chainId] ?: originalCount
 }

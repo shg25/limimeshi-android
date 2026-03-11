@@ -176,11 +176,23 @@ class ChainListViewModel @Inject constructor(
         if (currentState.isLoadingFavorite(chainId)) return
 
         val isFavorite = currentState.isFavorite(chainId)
+        val roomCount = currentState.chains
+            .firstOrNull { it.chain.id == chainId }
+            ?.chain?.favoriteCount ?: 0
+        val originalCount = currentState.getFavoriteCount(chainId, roomCount)
+        val optimisticCount = if (isFavorite) {
+            (originalCount - 1).coerceAtLeast(0)
+        } else {
+            originalCount + 1
+        }
 
         viewModelScope.launch {
-            // ローディング状態を設定
+            // ローディング状態を設定 + Optimistic UIでカウントを即時更新
             _uiState.update {
-                it.copy(loadingFavoriteChainIds = it.loadingFavoriteChainIds + chainId)
+                it.copy(
+                    loadingFavoriteChainIds = it.loadingFavoriteChainIds + chainId,
+                    favoriteCountOverrides = it.favoriteCountOverrides + (chainId to optimisticCount)
+                )
             }
 
             toggleFavoriteUseCase(chainId, isFavorite)
@@ -190,11 +202,14 @@ class ChainListViewModel @Inject constructor(
                 .onFailure { e ->
                     Timber.e(e, "Failed to toggle favorite: $chainId")
                     _uiState.update {
-                        it.copy(errorMessage = "お気に入りの変更に失敗しました")
+                        it.copy(
+                            errorMessage = "お気に入りの変更に失敗しました",
+                            favoriteCountOverrides = it.favoriteCountOverrides - chainId
+                        )
                     }
                 }
 
-            // ローディング状態を解除
+            // ローディング状態を解除（オーバーライドは成功時は維持、失敗時のみ上で削除済み）
             _uiState.update {
                 it.copy(loadingFavoriteChainIds = it.loadingFavoriteChainIds - chainId)
             }
