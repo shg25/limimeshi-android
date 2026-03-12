@@ -100,13 +100,13 @@
 
 ### Tests for User Story 2
 
-- [ ] T015 [P] [US2] お気に入り登録数表示の単体テストを作成 core/ui/src/test/.../component/FavoriteCountTest.kt（0件時の非表示、1件以上の表示確認）
+- [x] T015 [P] [US2] お気に入り登録数表示の単体テストを作成 core/ui/src/test/.../component/FavoriteCountTest.kt（0件時の非表示、1件以上の表示確認）
 
 ### Implementation for User Story 2
 
-- [ ] T016 [P] [US2] お気に入り登録数表示コンポーネントを作成 core/ui/.../component/FavoriteCount.kt（count=0の場合は非表示、それ以外は「♥ {count}人がお気に入り登録」を表示）
-- [ ] T017 [US2] ChainCardへのお気に入り登録数の追加 feature/chainlist/.../ChainCard.kt（FavoriteCountコンポーネントを追加、chain.favoriteCountを渡す）
-- [ ] T018 [US2] お気に入りボタンでの登録数ローカル更新 feature/chainlist/.../ChainListViewModel.kt（登録・解除時にfavoriteCountをローカルステートで即座に更新、Optimistic UI）
+- [x] T016 [P] [US2] お気に入り登録数表示コンポーネントを作成 core/ui/.../component/FavoriteCount.kt（count=0の場合は非表示、それ以外は「♥ {count}人がお気に入り登録」を表示）
+- [x] T017 [US2] ChainCardへのお気に入り登録数の追加 feature/chainlist/.../ChainCard.kt（FavoriteCountコンポーネントを追加、chain.favoriteCountを渡す）
+- [x] T018 [US2] お気に入りボタンでの登録数ローカル更新 feature/chainlist/.../ChainListViewModel.kt（登録・解除時にfavoriteCountをローカルステートで即座に更新、Optimistic UI）
 
 **Checkpoint**: この時点で、User Stories 1 AND 2は両方とも独立して動作します（お気に入り登録・解除＋登録数表示）
 

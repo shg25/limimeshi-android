@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/lang/ja/).
 ## [Unreleased]
 
 ### Added
+- お気に入り登録数の表示（003-favorites US2）
+  - FavoriteCountコンポーネント（0件非表示、1件以上で「♥ {count}人がお気に入り登録」表示）
+  - Optimistic UI（お気に入りトグル時にカウントを即座に±1）
 - GitHub Actions CI構築（`.github/workflows/ci.yml`）- lint/test/build
 - Firebase App Distribution CD構築（`.github/workflows/cd-firebase.yml`）- releaseブランチトリガー
 - Google Play内部テスト CD構築（`.github/workflows/cd-play.yml`）- mainブランチトリガー

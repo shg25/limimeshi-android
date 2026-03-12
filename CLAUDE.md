@@ -175,23 +175,38 @@ limimeshi-android/
 
 ## GitHub Spec Kit 運用ルール
 
-このプロジェクトは **Spec-Driven Development** を採用
+このプロジェクトは **Spec-Driven Development** を採用。全ての機能開発はSpec Kitのワークフローに従う
+
+詳細は`.specify/README.md`と`.specify/memory/constitution.md`を参照
 
 ### 基本原則
 
-- **仕様が王様、コードは従者**: spec.mdが唯一の信頼できる情報源
-- **spec.mdは生きたドキュメント**: 常に現在の実装を反映
+- **仕様が王様、コードは従者**：spec.mdが唯一の信頼できる情報源
+- **spec.mdは生きたドキュメント**：常に現在の実装を反映
+- **進捗管理**：`docs/CHANGELOG.md`と`docs/roadmap.md`で経過を記録
+
+### 実装時の手順
+
+機能の実装を依頼された場合、以下の手順に従う：
+
+1. **spec.mdを読む**：該当機能の`.specify/specs/NNN-feature-name/spec.md`を最初に確認
+2. **tasks.mdを確認**：実装するタスクの順序・依存関係を把握
+3. **plan.mdを確認**：実装計画・技術的な設計判断を確認
+4. **tasks.mdの順序に従って実装**：タスクIDの順番に実装を進める
+5. **TDD**：テストタスクがある場合はテストを先に書く
+6. **仕様変更が必要な場合**：spec.mdを先に修正し、実装と一緒にコミット
 
 ### 仕様変更時のワークフロー
 
 ```
-1. spec.md を修正（要件を更新）
+1. spec.mdを修正（要件を更新）
 2. 実装を仕様に合わせて修正
 3. コミット時に両方を含める
 ```
 
 ### 禁止事項
 
+- spec.mdを読まずに実装を開始することは禁止
 - spec.mdを更新せずに仕様変更を実装することは禁止
 - spec.mdと実装の乖離を放置することは禁止
 
@@ -230,10 +245,8 @@ limimeshi-android（このアプリ）
 
 ### 実装時
 
-1. **spec.mdを必ず参照**してから実装
-2. **tasks.mdの順序に従って**実装
-3. **TDD**（テストを先に書く）
-4. **パッケージ名**: `com.shg25.limimeshi`
+1. **Spec Kit ワークフローに従う**（上記「GitHub Spec Kit 運用ルール」参照）
+2. **パッケージ名**: `com.shg25.limimeshi`
 
 ### 技術選定
 

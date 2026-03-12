@@ -123,16 +123,34 @@ core/
 
 モジュール設計の詳細：`docs/adr/002-multimodule-architecture.md`
 
-## 仕様（Spec / Vertical Slice）
+## 開発手法：Spec-Driven Development
 
-実際の機能実装は小さなVertical Slice単位で進める
+本プロジェクトは **GitHub Spec Kit** による仕様駆動開発を採用
 
-### MVP機能
+- **仕様が王様、コードは従者**：spec.mdが唯一の信頼できる情報源
+- 全ての機能は`.specify/specs/`の仕様書から開始
+- 実装はVertical Slice（UI → ViewModel → UseCase → Repository → DataSource）単位で進める
+- 進捗は`docs/roadmap.md`と`docs/CHANGELOG.md`で管理
+
+### ワークフロー
+
+```
+1. /speckit-specify → spec.md（仕様書）を作成
+2. /speckit-plan → plan.md + tasks.md（実装計画）を作成
+3. /speckit-implement → tasks.md の順序に従って実装
+4. /speckit-checklist → 完了確認
+```
+
+詳細：`.specify/README.md`、`.specify/memory/constitution.md`
+
+### 機能一覧
+
+#### MVP機能
 
 - 002-chain-list：チェーン店一覧表示、キャンペーン表示
 - 003-favorites：お気に入り登録・解除
 
-### Phase2.5（追加技術デモ）
+#### Phase2.5（追加技術デモ）
 
 - 004-chain-detail：チェーン店詳細画面（Navigation引数、SavedStateHandle）
 - 005-background-sync：WorkManagerによるバックグラウンド同期

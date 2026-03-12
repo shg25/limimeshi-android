@@ -137,7 +137,7 @@ Phase1（2025/11）時点で`specs/002-chain-list/research.md`に技術選定を
 |------|-----------|------|
 | 002-chain-list | ✅ 完了 | チェーン店一覧、ソート、Pull-to-refresh |
 | 003-favorites US1 | ✅ 完了 | お気に入り登録・解除、Googleログイン |
-| 003-favorites US2 | ⏳ 待機中 | お気に入り登録数の表示 |
+| 003-favorites US2 | ✅ 完了 | お気に入り登録数の表示、Optimistic UI |
 | 002 お気に入りフィルタ | ⏳ 待機中 | 003-favoritesと連携 |
 
 ### 対象機能
@@ -150,9 +150,9 @@ Phase1（2025/11）時点で`specs/002-chain-list/research.md`に技術選定を
    - お気に入りフィルタ（003と連携）→ 未実装
    - **Pull-to-refresh**（ローカルキャッシュのクリア・再同期）
 
-2. **003-favorites（お気に入り登録）** 🚧
+2. **003-favorites（お気に入り登録）** ✅
    - チェーン店お気に入り登録・解除 ✅ US1完了
-   - お気に入り登録数の表示 → US2で実装予定
+   - お気に入り登録数の表示 ✅ US2完了（FavoriteCountコンポーネント、Optimistic UI）
    - Firestoreへの永続化 ✅
    - **Googleログイン機能** ✅ 追加実装（Credential Manager API）
 
@@ -289,6 +289,7 @@ Compose Chartsを使用したグラフ描画
 
 ## 更新履歴
 
+- 2026/03/12：003-favorites US2（お気に入り登録数の表示）完了、Optimistic UI実装
 - 2025/12/16：003-favorites US1（お気に入り登録・解除）完了、Googleログイン機能追加
 - 2025/12/15：Phase2.5（追加技術デモ）を追加、詳細画面/WorkManager/グラフ描画を計画
 - 2025/12/14：マルチモジュール構成をAndroid公式ドキュメント準拠に更新、ADR-002作成
