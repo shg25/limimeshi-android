@@ -1,4 +1,4 @@
-package com.shg25.limimeshi.ui.login
+package com.shg25.limimeshi.feature.auth
 
 import android.content.Context
 import androidx.credentials.CredentialManager

@@ -24,8 +24,8 @@ rootProject.name = "Limimeshi"
 include(":app")
 
 // Feature modules
+include(":feature:auth")
 include(":feature:chainlist")
-include(":feature:favorites")
 
 // Core modules
 include(":core:ui")

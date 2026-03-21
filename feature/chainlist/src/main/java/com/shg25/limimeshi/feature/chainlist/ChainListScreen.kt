@@ -55,8 +55,7 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChainListScreen(
-    viewModel: ChainListViewModel = hiltViewModel(),
-    getCampaignStatusUseCase: GetCampaignStatusUseCase = GetCampaignStatusUseCase()
+    viewModel: ChainListViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -70,7 +69,7 @@ fun ChainListScreen(
 
     ChainListContent(
         uiState = uiState,
-        getCampaignStatusUseCase = getCampaignStatusUseCase,
+        getCampaignStatusUseCase = viewModel.getCampaignStatusUseCase,
         onSortOrderChange = viewModel::changeSortOrder,
         onRefresh = viewModel::refresh,
         onToggleFavorite = viewModel::toggleFavorite,
