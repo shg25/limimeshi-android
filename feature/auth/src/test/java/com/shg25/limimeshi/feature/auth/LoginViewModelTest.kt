@@ -7,9 +7,9 @@ import com.shg25.limimeshi.core.domain.SignInWithGoogleUseCase
 import com.shg25.limimeshi.core.domain.SignOutUseCase
 import com.shg25.limimeshi.core.model.AuthUser
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
@@ -188,7 +188,7 @@ class LoginViewModelTest {
             viewModel.signOut()
 
             // Then
-            verify { signOutUseCase() }
+            coVerify { signOutUseCase() }
             val state = viewModel.uiState.value
             assertFalse(state.isLoggedIn)
             assertNull(state.userName)

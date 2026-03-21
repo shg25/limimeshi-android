@@ -102,12 +102,14 @@ class LoginViewModel @Inject constructor(
     }
 
     fun signOut() {
-        signOutUseCase()
-        _uiState.update {
-            it.copy(
-                isLoggedIn = false,
-                userName = null
-            )
+        viewModelScope.launch {
+            signOutUseCase()
+            _uiState.update {
+                it.copy(
+                    isLoggedIn = false,
+                    userName = null
+                )
+            }
         }
     }
 

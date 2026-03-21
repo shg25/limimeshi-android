@@ -1,6 +1,6 @@
 package com.shg25.limimeshi.core.domain
 
-import com.shg25.limimeshi.core.data.repository.FavoritesRepository
+import com.shg25.limimeshi.core.data.repository.AuthRepository
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -14,20 +14,20 @@ import app.cash.turbine.test
 @DisplayName("ObserveLoginStateUseCase")
 class ObserveLoginStateUseCaseTest {
 
-    private lateinit var favoritesRepository: FavoritesRepository
+    private lateinit var authRepository: AuthRepository
     private lateinit var useCase: ObserveLoginStateUseCase
 
     @BeforeEach
     fun setup() {
-        favoritesRepository = mockk()
-        useCase = ObserveLoginStateUseCase(favoritesRepository)
+        authRepository = mockk()
+        useCase = ObserveLoginStateUseCase(authRepository)
     }
 
     @Test
-    @DisplayName("repository.isLoggedInを委譲する")
-    fun delegatesToRepositoryIsLoggedIn() = runTest {
+    @DisplayName("authRepository.isLoggedInを委譲する")
+    fun delegatesToAuthRepositoryIsLoggedIn() = runTest {
         // Given
-        every { favoritesRepository.isLoggedIn } returns flowOf(true)
+        every { authRepository.isLoggedIn } returns flowOf(true)
 
         // When & Then
         useCase().test {
