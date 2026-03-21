@@ -1,14 +1,11 @@
 package com.shg25.limimeshi.core.data.repository
 
-import com.google.firebase.auth.FirebaseAuth
 import com.shg25.limimeshi.core.database.dao.FavoriteDao
 import com.shg25.limimeshi.core.database.entity.FavoriteEntity
 import com.shg25.limimeshi.core.model.Favorite
 import com.shg25.limimeshi.core.network.datasource.FirestoreFavoritesDataSource
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -24,32 +21,15 @@ import javax.inject.Singleton
 class FavoritesRepository @Inject constructor(
     private val firestoreFavoritesDataSource: FirestoreFavoritesDataSource,
     private val favoriteDao: FavoriteDao,
-    private val firebaseAuth: FirebaseAuth
+    private val authRepository: AuthRepository
 ) {
-    /**
-     * 現在のユーザーIDを取得
-     */
-    val currentUserId: String?
-        get() = firebaseAuth.currentUser?.uid
-
-    /**
-     * ログイン状態を監視するFlow
-     */
-    val isLoggedIn: Flow<Boolean> = callbackFlow {
-        val listener = FirebaseAuth.AuthStateListener { auth ->
-            trySend(auth.currentUser != null)
-        }
-        firebaseAuth.addAuthStateListener(listener)
-        awaitClose { firebaseAuth.removeAuthStateListener(listener) }
-    }
-
     /**
      * お気に入りチェーンIDリストを監視
      * ログイン中はRoomキャッシュを返す
      */
-    val favoriteChainIds: Flow<Set<String>> = isLoggedIn.flatMapLatest { loggedIn ->
+    val favoriteChainIds: Flow<Set<String>> = authRepository.isLoggedIn.flatMapLatest { loggedIn ->
         if (loggedIn) {
-            val userId = currentUserId
+            val userId = authRepository.currentUserId
             if (userId != null) {
                 favoriteDao.getFavoriteChainIds(userId).map { it.toSet() }
             } else {
@@ -64,7 +44,7 @@ class FavoritesRepository @Inject constructor(
      * Firestoreからお気に入りを同期
      */
     suspend fun syncFromFirestore() {
-        val userId = currentUserId ?: return
+        val userId = authRepository.currentUserId ?: return
         val favorites = firestoreFavoritesDataSource.getFavorites(userId)
         val entities = favorites.map { FavoriteEntity.fromModel(userId, it) }
         favoriteDao.replaceAllByUserId(userId, entities)
@@ -74,7 +54,7 @@ class FavoritesRepository @Inject constructor(
      * お気に入り登録
      */
     suspend fun addFavorite(chainId: String) {
-        val userId = currentUserId ?: throw IllegalStateException("User not logged in")
+        val userId = authRepository.currentUserId ?: throw IllegalStateException("User not logged in")
 
         // Firestoreに登録
         firestoreFavoritesDataSource.addFavorite(userId, chainId)
@@ -88,7 +68,7 @@ class FavoritesRepository @Inject constructor(
      * お気に入り解除
      */
     suspend fun removeFavorite(chainId: String) {
-        val userId = currentUserId ?: throw IllegalStateException("User not logged in")
+        val userId = authRepository.currentUserId ?: throw IllegalStateException("User not logged in")
 
         // Firestoreから削除
         firestoreFavoritesDataSource.removeFavorite(userId, chainId)
@@ -112,7 +92,7 @@ class FavoritesRepository @Inject constructor(
      * ログアウト時にローカルキャッシュをクリア
      */
     suspend fun clearLocalCache() {
-        val userId = currentUserId ?: return
+        val userId = authRepository.currentUserId ?: return
         favoriteDao.deleteAllByUserId(userId)
     }
 }

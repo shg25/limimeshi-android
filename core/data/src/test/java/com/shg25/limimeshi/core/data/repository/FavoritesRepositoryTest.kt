@@ -1,7 +1,5 @@
 package com.shg25.limimeshi.core.data.repository
 
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.shg25.limimeshi.core.database.dao.FavoriteDao
 import com.shg25.limimeshi.core.database.entity.FavoriteEntity
 import com.shg25.limimeshi.core.model.Favorite
@@ -35,8 +33,7 @@ class FavoritesRepositoryTest {
 
     private lateinit var firestoreFavoritesDataSource: FirestoreFavoritesDataSource
     private lateinit var favoriteDao: FavoriteDao
-    private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var firebaseUser: FirebaseUser
+    private lateinit var authRepository: AuthRepository
     private lateinit var repository: FavoritesRepository
 
     private val testUserId = "test-user-id"
@@ -46,16 +43,14 @@ class FavoritesRepositoryTest {
     fun setup() {
         firestoreFavoritesDataSource = mockk(relaxed = true)
         favoriteDao = mockk(relaxed = true)
-        firebaseAuth = mockk(relaxed = true)
-        firebaseUser = mockk(relaxed = true)
+        authRepository = mockk(relaxed = true)
 
-        every { firebaseUser.uid } returns testUserId
-        every { firebaseAuth.currentUser } returns firebaseUser
+        every { authRepository.currentUserId } returns testUserId
 
         repository = FavoritesRepository(
             firestoreFavoritesDataSource = firestoreFavoritesDataSource,
             favoriteDao = favoriteDao,
-            firebaseAuth = firebaseAuth
+            authRepository = authRepository
         )
     }
 
@@ -78,7 +73,7 @@ class FavoritesRepositoryTest {
         @DisplayName("未ログイン時、IllegalStateExceptionがスローされる")
         fun whenNotLoggedIn_throwsIllegalStateException() = runTest {
             // Given
-            every { firebaseAuth.currentUser } returns null
+            every { authRepository.currentUserId } returns null
 
             // When & Then
             assertThrows(IllegalStateException::class.java) {
@@ -124,7 +119,7 @@ class FavoritesRepositoryTest {
         @DisplayName("未ログイン時、IllegalStateExceptionがスローされる")
         fun whenNotLoggedIn_throwsIllegalStateException() = runTest {
             // Given
-            every { firebaseAuth.currentUser } returns null
+            every { authRepository.currentUserId } returns null
 
             // When & Then
             assertThrows(IllegalStateException::class.java) {
@@ -188,7 +183,7 @@ class FavoritesRepositoryTest {
         @DisplayName("未ログイン時、何もしない")
         fun whenNotLoggedIn_doesNothing() = runTest {
             // Given
-            every { firebaseAuth.currentUser } returns null
+            every { authRepository.currentUserId } returns null
 
             // When
             repository.syncFromFirestore()
@@ -217,41 +212,13 @@ class FavoritesRepositoryTest {
         @DisplayName("未ログイン時、何もしない")
         fun whenNotLoggedIn_doesNothing() = runTest {
             // Given
-            every { firebaseAuth.currentUser } returns null
+            every { authRepository.currentUserId } returns null
 
             // When
             repository.clearLocalCache()
 
             // Then
             coVerify(exactly = 0) { favoriteDao.deleteAllByUserId(any()) }
-        }
-    }
-
-    @Nested
-    @DisplayName("currentUserId")
-    inner class CurrentUserId {
-
-        @Test
-        @DisplayName("ログイン時、ユーザーIDを返す")
-        fun whenLoggedIn_returnsUserId() {
-            // When
-            val result = repository.currentUserId
-
-            // Then
-            assertEquals(testUserId, result)
-        }
-
-        @Test
-        @DisplayName("未ログイン時、nullを返す")
-        fun whenNotLoggedIn_returnsNull() {
-            // Given
-            every { firebaseAuth.currentUser } returns null
-
-            // When
-            val result = repository.currentUserId
-
-            // Then
-            assertEquals(null, result)
         }
     }
 }
