@@ -178,8 +178,8 @@ tasks.register<JacocoReport>("jacocoTestReport") {
 
 dependencies {
     // Feature modules
+    implementation(project(":feature:auth"))
     implementation(project(":feature:chainlist"))
-    implementation(project(":feature:favorites"))
 
     // Core modules
     implementation(project(":core:ui"))
@@ -208,11 +208,6 @@ dependencies {
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
-
-    // Google Sign-In (Credential Manager)
-    implementation(libs.credentials)
-    implementation(libs.credentials.play.services)
-    implementation(libs.googleid)
 
     // Logging
     implementation(libs.timber)

@@ -1,4 +1,4 @@
-package com.shg25.limimeshi.ui.login
+package com.shg25.limimeshi.feature.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,17 +27,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.shg25.limimeshi.R
 
 @Composable
 fun LoginScreen(
+    webClientId: String,
     viewModel: LoginViewModel = hiltViewModel(),
     onNavigateToChainList: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
-    val webClientId = context.getString(R.string.default_web_client_id)
 
     LaunchedEffect(uiState.errorMessage) {
         uiState.errorMessage?.let { message ->

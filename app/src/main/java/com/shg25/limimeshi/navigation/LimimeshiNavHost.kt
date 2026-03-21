@@ -2,12 +2,14 @@ package com.shg25.limimeshi.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.shg25.limimeshi.R
+import com.shg25.limimeshi.feature.auth.LoginScreen
 import com.shg25.limimeshi.feature.chainlist.ChainListScreen
-import com.shg25.limimeshi.ui.login.LoginScreen
 
 /**
  * Limimeshiアプリのナビゲーションホスト
@@ -18,6 +20,9 @@ fun LimimeshiNavHost(
     navController: NavHostController = rememberNavController(),
     startDestination: String = Route.Login.route
 ) {
+    val context = LocalContext.current
+    val webClientId = context.getString(R.string.default_web_client_id)
+
     NavHost(
         navController = navController,
         startDestination = startDestination,
@@ -25,6 +30,7 @@ fun LimimeshiNavHost(
     ) {
         composable(Route.Login.route) {
             LoginScreen(
+                webClientId = webClientId,
                 onNavigateToChainList = {
                     navController.navigate(Route.ChainList.route) {
                         popUpTo(Route.Login.route) { inclusive = true }

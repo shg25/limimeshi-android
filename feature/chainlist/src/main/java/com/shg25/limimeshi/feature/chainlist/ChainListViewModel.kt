@@ -2,16 +2,21 @@ package com.shg25.limimeshi.feature.chainlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shg25.limimeshi.core.data.repository.FavoritesRepository
+import com.shg25.limimeshi.core.domain.GetCampaignStatusUseCase
 import com.shg25.limimeshi.core.domain.GetChainListUseCase
+import com.shg25.limimeshi.core.domain.ObserveFavoriteIdsUseCase
+import com.shg25.limimeshi.core.domain.ObserveLoginStateUseCase
 import com.shg25.limimeshi.core.domain.SyncChainDataUseCase
+import com.shg25.limimeshi.core.domain.SyncFavoritesUseCase
 import com.shg25.limimeshi.core.domain.ToggleFavoriteUseCase
 import com.shg25.limimeshi.core.model.ChainSortOrder
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -20,35 +25,49 @@ import javax.inject.Inject
 /**
  * チェーン店一覧画面のViewModel
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ChainListViewModel @Inject constructor(
     private val getChainListUseCase: GetChainListUseCase,
     private val syncChainDataUseCase: SyncChainDataUseCase,
-    private val favoritesRepository: FavoritesRepository,
-    private val toggleFavoriteUseCase: ToggleFavoriteUseCase
+    private val observeLoginStateUseCase: ObserveLoginStateUseCase,
+    private val observeFavoriteIdsUseCase: ObserveFavoriteIdsUseCase,
+    private val syncFavoritesUseCase: SyncFavoritesUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    val getCampaignStatusUseCase: GetCampaignStatusUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ChainListUiState())
     val uiState: StateFlow<ChainListUiState> = _uiState.asStateFlow()
 
+    private val _sortOrder = MutableStateFlow(ChainSortOrder.NEWEST)
+
     init {
-        loadChainList()
+        ensureCache()
+        observeChainList()
         observeLoginState()
         observeFavorites()
     }
 
     /**
-     * チェーン店一覧を読み込み
+     * キャッシュが空の場合にFirestoreから同期
      */
-    private fun loadChainList() {
+    private fun ensureCache() {
         viewModelScope.launch {
-            // キャッシュが空の場合は先にFirestoreから同期
             if (syncChainDataUseCase.isCacheEmpty()) {
                 syncFromFirestore()
             }
+        }
+    }
 
-            // Roomからデータを取得（リアルタイム更新）
-            getChainListUseCase(_uiState.value.sortOrder)
+    /**
+     * チェーン店一覧をソート順に応じてリアルタイム購読（flatMapLatestで単一購読）
+     */
+    private fun observeChainList() {
+        viewModelScope.launch {
+            _sortOrder.flatMapLatest { sortOrder ->
+                getChainListUseCase(sortOrder)
+            }
                 .catch { e ->
                     Timber.e(e, "Failed to load chain list")
                     _uiState.update {
@@ -111,22 +130,10 @@ class ChainListViewModel @Inject constructor(
      * ソート順を変更
      */
     fun changeSortOrder(sortOrder: ChainSortOrder) {
-        if (_uiState.value.sortOrder == sortOrder) return
+        if (_sortOrder.value == sortOrder) return
 
         _uiState.update { it.copy(sortOrder = sortOrder) }
-
-        // 新しいソート順でデータを再取得
-        viewModelScope.launch {
-            getChainListUseCase(sortOrder)
-                .catch { e ->
-                    Timber.e(e, "Failed to change sort order")
-                }
-                .collect { chains ->
-                    _uiState.update {
-                        it.copy(chains = chains)
-                    }
-                }
-        }
+        _sortOrder.value = sortOrder
     }
 
     /**
@@ -141,13 +148,13 @@ class ChainListViewModel @Inject constructor(
      */
     private fun observeLoginState() {
         viewModelScope.launch {
-            favoritesRepository.isLoggedIn.collect { isLoggedIn ->
+            observeLoginStateUseCase().collect { isLoggedIn ->
                 _uiState.update { it.copy(isLoggedIn = isLoggedIn) }
 
                 // ログイン時にお気に入りを同期
                 if (isLoggedIn) {
                     try {
-                        favoritesRepository.syncFromFirestore()
+                        syncFavoritesUseCase()
                     } catch (e: Exception) {
                         Timber.e(e, "Failed to sync favorites")
                     }
@@ -161,7 +168,7 @@ class ChainListViewModel @Inject constructor(
      */
     private fun observeFavorites() {
         viewModelScope.launch {
-            favoritesRepository.favoriteChainIds.collect { favoriteIds ->
+            observeFavoriteIdsUseCase().collect { favoriteIds ->
                 _uiState.update { it.copy(favoriteChainIds = favoriteIds) }
             }
         }
