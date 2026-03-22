@@ -5,12 +5,6 @@ plugins {
 
 android {
     namespace = "com.shg25.limimeshi.core.data"
-
-    testOptions {
-        unitTests.all {
-            it.useJUnitPlatform()
-        }
-    }
 }
 
 dependencies {
@@ -24,8 +18,6 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.test)
 
-    testImplementation(libs.junit5.api)
-    testRuntimeOnly(libs.junit5.engine)
     testImplementation(libs.mockk)
     testImplementation(libs.turbine)
 }

@@ -3,8 +3,10 @@ import com.shg25.limimeshi.configureKotlinAndroid
 import com.shg25.limimeshi.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.testing.Test
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.withType
 
 /**
  * 基本的なAndroid Libraryモジュール用のConvention Plugin
@@ -20,6 +22,10 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
 
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
+            }
+
+            tasks.withType<Test>().configureEach {
+                useJUnitPlatform()
             }
 
             dependencies {

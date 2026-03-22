@@ -4,12 +4,6 @@ plugins {
 
 android {
     namespace = "com.shg25.limimeshi.feature.auth"
-
-    testOptions {
-        unitTests.all {
-            it.useJUnitPlatform()
-        }
-    }
 }
 
 dependencies {
@@ -20,8 +14,4 @@ dependencies {
     implementation(libs.credentials)
     implementation(libs.credentials.play.services)
     implementation(libs.googleid)
-
-    // Testing - JUnit5
-    testImplementation(libs.junit5.api)
-    testRuntimeOnly(libs.junit5.engine)
 }
