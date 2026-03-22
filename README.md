@@ -108,7 +108,10 @@ parent-directory/
 
 ```
 app/                    # アプリケーションエントリポイント
+build-logic/
+  └── convention/       # Convention Plugins（共通ビルド設定）
 feature/
+  ├── auth/             # 認証機能（Googleログイン）
   ├── chainlist/        # チェーン店一覧機能
   └── favorites/        # お気に入り機能
 core/

@@ -29,6 +29,12 @@ tasks {
         enableStricterValidation = true
         failOnWarning = true
     }
+    // Android Studioの「Clean and Assemble Project with Tests」が
+    // build-logicにもtestClassesを要求し、cleanとの組み合わせで
+    // composite buildのスケジューラがデッドロックする問題を回避
+    named("testClasses") {
+        dependsOn.clear()
+    }
 }
 
 gradlePlugin {
