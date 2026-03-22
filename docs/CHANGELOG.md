@@ -7,7 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/lang/ja/).
 
 ## [Unreleased]
 
+### Changed
+- LoginViewModelの認証プロバイダ抽象化（PR #20）
+  - AuthRepository（core:data）+ 認証UseCase群（core:domain）に分離
+  - AuthUserモデル（core:model）追加でFirebase型のドメイン漏洩を防止
+  - GoogleCredentialProviderでCredentialManagerをラップ（テスタビリティ向上）
+  - 認証状態の単一ソース化（AuthRepositoryに集約、FavoritesRepositoryから委譲）
+  - ログアウト時のローカルキャッシュクリア配線（SignOutUseCase）
+- アーキテクチャレビュー指摘4件の修正（PR #19）
+- useJUnitPlatform()をConvention Pluginに集約（DRY原則）
+
+### Fixed
+- Android Studioの「Clean and Assemble Project with Tests」デッドロック修正（PR #21）
+  - build-logicのcomposite buildでclean/testClassesのスケジューラ競合が発生していた
+  - build-logic導入時（b4a7f5b）から潜在していた問題
+
 ### Added
+- 認証関連テスト19件追加（AuthRepository、認証UseCase×3、LoginViewModel、既存UseCase×3）
 - お気に入り登録数の表示（003-favorites US2）
   - FavoriteCountコンポーネント（0件非表示、1件以上で「♥ {count}人がお気に入り登録」表示）
   - Optimistic UI（お気に入りトグル時にカウントを即座に±1）

@@ -156,6 +156,13 @@ Phase1（2025/11）時点で`specs/002-chain-list/research.md`に技術選定を
    - Firestoreへの永続化 ✅
    - **Googleログイン機能** ✅ 追加実装（Credential Manager API）
 
+### アーキテクチャ改善 ✅
+
+- 認証プロバイダ抽象化（LoginViewModel → AuthRepository + UseCase層に分離）
+- 認証状態の単一ソース化（AuthRepositoryに集約）
+- build-logicのcomposite buildデッドロック修正
+- テストカバレッジ拡充（認証関連19件追加）
+
 ### 技術スタック
 
 - Kotlin + Jetpack Compose + Firebase
@@ -289,6 +296,7 @@ Compose Chartsを使用したグラフ描画
 
 ## 更新履歴
 
+- 2026/03/22：認証プロバイダ抽象化、認証状態の単一ソース化、build-logicデッドロック修正、テスト19件追加
 - 2026/03/12：003-favorites US2（お気に入り登録数の表示）完了、Optimistic UI実装
 - 2025/12/16：003-favorites US1（お気に入り登録・解除）完了、Googleログイン機能追加
 - 2025/12/15：Phase2.5（追加技術デモ）を追加、詳細画面/WorkManager/グラフ描画を計画

@@ -94,6 +94,10 @@ GitHub Spec Kit（仕様駆動開発）：
 
 ```
 limimeshi-android/
+├── build-logic/                 # Convention Plugins（composite build）
+│   └── convention/              # 共通ビルド設定（JUnit5, Compose, Hilt等）
+│       └── src/main/kotlin/     # Plugin実装
+│
 ├── .specify/specs/              # GitHub Spec Kit仕様書
 │   ├── 002-chain-list/          # チェーン店一覧機能
 │   │   ├── spec.md              # 機能仕様
@@ -114,6 +118,11 @@ limimeshi-android/
 │       └── navigation/          # Navigation Compose
 │
 ├── feature/                     # 機能モジュール群
+│   ├── auth/                    # 認証機能（Googleログイン）
+│   │   └── src/main/java/com/shg25/limimeshi/feature/auth/
+│   │       ├── LoginScreen.kt
+│   │       ├── LoginViewModel.kt
+│   │       └── GoogleCredentialProvider.kt
 │   ├── chainlist/               # チェーン店一覧機能（002）
 │   │   └── src/main/java/com/shg25/limimeshi/feature/chainlist/
 │   │       ├── ChainListScreen.kt
@@ -235,6 +244,12 @@ limimeshi-android（このアプリ）
 - 各チェーン店に紐づくキャンペーンを表示
 - お気に入りフィルタ（003機能と連携）
 - X Post埋め込み表示
+
+### 認証機能（feature:auth）
+- Googleログイン（Credential Manager API）
+- AuthRepository（core:data）が認証状態の単一ソース
+- 認証UseCase群（core:domain）: SignInWithGoogle / SignOut / GetCurrentUser
+- GoogleCredentialProvider（feature:auth）でCredentialManagerをラップ
 
 ### 003-favorites（お気に入り登録）
 - チェーン店をお気に入り登録・解除
